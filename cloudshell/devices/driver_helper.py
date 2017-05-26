@@ -7,8 +7,7 @@ from cloudshell.cli.cli import CLI
 from cloudshell.cli.session_pool_manager import SessionPoolManager
 from cloudshell.shell.core.session.cloudshell_session import CloudShellSessionContext
 from cloudshell.shell.core.session.logging_session import LoggingSessionContext
-from cloudshell.snmp.snmp_parameters import SNMPV2Parameters, SNMPV3Parameters
-# from cloudshell.snmp.quali_snmp import QualiSnmp
+from cloudshell.snmp.snmp_parameters import SNMPV3Parameters, SNMPV2ReadParameters, SNMPV2WriteParameters
 
 
 def get_cli(session_pool_size, pool_timeout=100):
@@ -45,7 +44,7 @@ def get_api(context):
 
 def get_snmp_parameters_from_command_context(resource_config, api):
     """
-    :param ResourceCommandContext command_context: command context
+    :param ResourceCommandContext resource_config: command context
     :return:
     """
 
@@ -55,11 +54,13 @@ def get_snmp_parameters_from_command_context(resource_config, api):
                                 snmp_password=api.DecryptPassword(resource_config.snmp_v3_password).Value or '',
                                 snmp_private_key=resource_config.snmp_v3_private_key or '')
     else:
-        return SNMPV2Parameters(ip=resource_config.address,
-                                snmp_community=api.DecryptPassword(resource_config.snmp_read_community).Value or '')
-                                # snmp_community=resource_config.snmp_read_community or '')
-
-
-# def get_snmp_handler(resource_config, logger, api):
-#     snmp_handler_params = get_snmp_parameters_from_command_context(resource_config, api)
-#     return QualiSnmp(snmp_parameters=snmp_handler_params, logger=logger)
+        write_community = api.DecryptPassword(resource_config.snmp_write_community).Value or ''
+        if write_community:
+            return SNMPV2WriteParameters(ip=resource_config.address,
+                                         snmp_write_community=api.DecryptPassword(
+                                             resource_config.snmp_write_community).Value or '')
+        else:
+            return SNMPV2ReadParameters(ip=resource_config.address,
+                                        snmp_read_community=api.DecryptPassword(
+                                            resource_config.snmp_read_community).Value or '')
+            # snmp_community=resource_config.snmp_read_community or '')
