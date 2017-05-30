@@ -57,8 +57,7 @@ def get_snmp_parameters_from_command_context(resource_config, api):
         write_community = api.DecryptPassword(resource_config.snmp_write_community).Value or ''
         if write_community:
             return SNMPV2WriteParameters(ip=resource_config.address,
-                                         snmp_write_community=api.DecryptPassword(
-                                             resource_config.snmp_write_community).Value or '')
+                                         snmp_write_community=write_community)
         else:
             return SNMPV2ReadParameters(ip=resource_config.address,
                                         snmp_read_community=api.DecryptPassword(
