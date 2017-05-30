@@ -69,15 +69,14 @@ class TestDriverHelper(unittest.TestCase):
         result = driver_helper.get_snmp_parameters_from_command_context(resource_config=config, api=api)
         # verify
         self.assertEqual(result, snmp_v3)
+        api.DecryptPassword.assert_called_once_with(config.snmp_v3_password)
         snmpv3parameters_class.assert_called_once_with(ip=config.address,
                                                        snmp_user=config.snmp_v3_user,
                                                        snmp_password=api.DecryptPassword().Value,
                                                        snmp_private_key=config.snmp_v3_private_key)
 
-        api.DecryptPassword.assert_called_once_with(config.snmp_v3_password)
-
-    @mock.patch("cloudshell.devices.driver_helper.SNMPV2Parameters")
-    def test_get_snmp_parameters_from_command_context_for_snmp_v3(self, snmpv2parameters_class):
+    @mock.patch("cloudshell.devices.driver_helper.SNMPV2WriteParameters")
+    def test_get_snmp_parameters_from_command_context_for_snmp_v2_write_community(self, snmpv2parameters_class):
         """Check that method will return SNMPV2Parameters instance for snmp_version=v2 in config"""
         config = mock.MagicMock(snmp_version="v2")
         api = mock.MagicMock()
@@ -88,9 +87,31 @@ class TestDriverHelper(unittest.TestCase):
 
         # act
         result = driver_helper.get_snmp_parameters_from_command_context(resource_config=config, api=api)
+
+        # verify
+        self.assertEqual(result, snmp_v2)
+        api.DecryptPassword.assert_called_once_with(config.snmp_write_community)
+        snmpv2parameters_class.assert_called_once_with(ip=config.address,
+                                                       snmp_write_community=decrypted_snmp_string.Value)
+
+    @mock.patch("cloudshell.devices.driver_helper.SNMPV2ReadParameters")
+    def test_get_snmp_parameters_from_command_context_for_snmp_v2_read_community(self, snmpv2parameters_class):
+        """Check that method will return SNMPV2ReadParameters instance for snmp_version=v2 in config"""
+        config = mock.MagicMock(snmp_version="v2")
+        api = mock.MagicMock()
+        snmp_v2 = mock.MagicMock()
+        snmpv2parameters_class.return_value = snmp_v2
+        decrypted_snmp_string = mock.MagicMock()
+        test_value = mock.MagicMock()
+        test_value.Value = None
+        api.DecryptPassword.side_effect = [test_value, decrypted_snmp_string]
+        # act
+        result = driver_helper.get_snmp_parameters_from_command_context(resource_config=config, api=api)
+
         # verify
         self.assertEqual(result, snmp_v2)
         snmpv2parameters_class.assert_called_once_with(ip=config.address,
-                                                       snmp_community=decrypted_snmp_string.Value)
+                                                       snmp_read_community=decrypted_snmp_string.Value)
 
-        api.DecryptPassword.assert_called_once_with(config.snmp_read_community)
+        api.DecryptPassword.assert_called_with(config.snmp_read_community)
+        self.assertTrue(api.DecryptPassword.call_count == 2)
