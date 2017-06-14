@@ -22,6 +22,7 @@ class CliHandlerImpl(CliHandlerInterface):
         :param api:
         :return:
         """
+
         self._cli = cli
         self.resource_config = resource_config
         self._logger = logger
@@ -30,10 +31,22 @@ class CliHandlerImpl(CliHandlerInterface):
 
     @abstractproperty
     def enable_mode(self):
+        """Define Default Command Mode
+
+        :return: Default Command Mode
+        :rtype: CommandMode
+        """
+
         pass
 
     @abstractproperty
     def config_mode(self):
+        """Define Config Command Mode
+
+        :return: Config Command Mode
+        :rtype: CommandMode
+        """
+
         pass
 
     @property
