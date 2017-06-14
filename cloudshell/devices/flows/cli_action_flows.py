@@ -109,10 +109,8 @@ class LoadFirmwareFlow(BaseCliFlow):
 
 
 class RunCommandFlow(BaseCliFlow):
-    def __init__(self, cli_handler, logger, action_map=None, error_map=None):
+    def __init__(self, cli_handler, logger):
         super(RunCommandFlow, self).__init__(cli_handler, logger)
-        self._action_map = action_map
-        self._error_map = error_map
 
     def execute_flow(self, custom_command="", is_config=False):
         """ Execute flow which run custom command on device
@@ -143,8 +141,7 @@ class RunCommandFlow(BaseCliFlow):
 
         with self._cli_handler.get_cli_service(mode) as session:
             for cmd in commands:
-                responses.append(session.send_command(command=cmd, action_map=self._action_map,
-                                                      error_map=self._error_map))
+                responses.append(session.send_command(command=cmd))
         return '\n'.join(responses)
 
 
