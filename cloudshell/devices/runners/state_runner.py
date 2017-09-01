@@ -33,7 +33,8 @@ class StateRunner(StateOperationsInterface):
             health_check_flow = RunCommandFlow(self.cli_handler, self._logger)
             health_check_flow.execute_flow()
             result += ' passed.'
-        except Exception:
+        except Exception as e:
+            self._logger.exception(e)
             api_response = 'Error'
             result += ' failed.'
 

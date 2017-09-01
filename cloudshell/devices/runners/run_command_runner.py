@@ -23,6 +23,10 @@ class RunCommandRunner(RunCommandInterface):
 
         pass
 
+    @property
+    def run_command_flow(self):
+        return RunCommandFlow(self.cli_handler, self._logger)
+
     def run_custom_command(self, custom_command):
         """ Execute custom command on device
 
@@ -30,8 +34,7 @@ class RunCommandRunner(RunCommandInterface):
         :return: result of command execution
         """
 
-        run_command_flow = RunCommandFlow(self.cli_handler, self._logger)
-        return run_command_flow.execute_flow(custom_command=custom_command)
+        return self.run_command_flow.execute_flow(custom_command=custom_command)
 
     def run_custom_config_command(self, custom_command):
         """ Execute custom command in configuration mode on device
@@ -40,5 +43,4 @@ class RunCommandRunner(RunCommandInterface):
         :return: result of command execution
         """
 
-        run_command_flow = RunCommandFlow(self.cli_handler, self._logger)
-        return run_command_flow.execute_flow(custom_command=custom_command, is_config=True)
+        return self.run_command_flow.execute_flow(custom_command=custom_command, is_config=True)

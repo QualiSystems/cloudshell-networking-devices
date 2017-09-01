@@ -7,7 +7,7 @@ from cloudshell.devices.standards.validators import attr_length_validator
 
 AVAILABLE_SHELL_TYPES = ["CS_Switch",
                          "CS_Router",
-                         "CS_Controller"]
+                         "CS_WirelessController"]
 
 __all__ = ["GenericResource", "GenericChassis",
            "GenericModule", "GenericSubModule",
