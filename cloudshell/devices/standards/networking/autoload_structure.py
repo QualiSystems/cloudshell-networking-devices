@@ -25,7 +25,8 @@ class AbstractResource(object):
         self.shell_name = shell_name
         if self.shell_name:
             self.namespace = "{shell_name}.{resource_model}.".format(shell_name=self.shell_name,
-                                                                     resource_model=self.RESOURCE_MODEL)
+                                                                     resource_model=self.RESOURCE_MODEL.replace(" ",
+                                                                                                                ""))
         else:
             self.namespace = ""
 
@@ -36,9 +37,13 @@ class AbstractResource(object):
     def add_sub_resource(self, relative_id, sub_resource):
         """ Add sub resource """
 
-        existing_sub_resources = self.resources.get(sub_resource.RELATIVE_PATH_TEMPLATE, defaultdict(list))
+        relative_path_template = sub_resource.RELATIVE_PATH_TEMPLATE
+        if not self.shell_name and sub_resource.RESOURCE_MODEL in ["Generic Chassis", "Generic Module",
+                                                                   "Generic Sub Module", "Generic Port"]:
+            relative_path_template = ""
+        existing_sub_resources = self.resources.get(relative_path_template, defaultdict(list))
         existing_sub_resources[relative_id].append(sub_resource)
-        self.resources.update({sub_resource.RELATIVE_PATH_TEMPLATE: existing_sub_resources})
+        self.resources.update({relative_path_template: existing_sub_resources})
 
     @property
     def cloudshell_model_name(self):
@@ -46,7 +51,8 @@ class AbstractResource(object):
 
         if self.shell_name:
             return "{shell_name}.{resource_model}".format(shell_name=self.shell_name,
-                                                          resource_model=self.RESOURCE_MODEL)
+                                                          resource_model=self.RESOURCE_MODEL.replace(" ",
+                                                                                                     ""))
         else:
             return self.RESOURCE_MODEL
 
@@ -78,7 +84,7 @@ class AbstractResource(object):
 
 
 class GenericResource(AbstractResource):
-    RESOURCE_MODEL = "GenericResource"
+    RESOURCE_MODEL = "Generic Resource"
     RELATIVE_PATH_TEMPLATE = ""
 
     def __init__(self, shell_name, name, unique_id, shell_type="CS_Switch"):
@@ -176,7 +182,7 @@ class GenericResource(AbstractResource):
 
 
 class GenericChassis(AbstractResource):
-    RESOURCE_MODEL = "GenericChassis"
+    RESOURCE_MODEL = "Generic Chassis"
     RELATIVE_PATH_TEMPLATE = "CH"
 
     @property
@@ -210,7 +216,7 @@ class GenericChassis(AbstractResource):
 
 
 class GenericModule(AbstractResource):
-    RESOURCE_MODEL = "GenericModule"
+    RESOURCE_MODEL = "Generic Module"
     RELATIVE_PATH_TEMPLATE = "M"
 
     @property
@@ -263,7 +269,7 @@ class GenericModule(AbstractResource):
 
 
 class GenericSubModule(AbstractResource):
-    RESOURCE_MODEL = "GenericSubModule"
+    RESOURCE_MODEL = "Generic Sub Module"
     RELATIVE_PATH_TEMPLATE = "SM"
 
     @property
@@ -316,7 +322,7 @@ class GenericSubModule(AbstractResource):
 
 
 class GenericPort(AbstractResource):
-    RESOURCE_MODEL = "GenericPort"
+    RESOURCE_MODEL = "Generic Port"
     RELATIVE_PATH_TEMPLATE = "P"
 
     @property
@@ -482,7 +488,7 @@ class GenericPort(AbstractResource):
 
 
 class GenericPowerPort(AbstractResource):
-    RESOURCE_MODEL = "GenericPowerPort"
+    RESOURCE_MODEL = "Generic Power Port"
     RELATIVE_PATH_TEMPLATE = "PP"
 
     @property
@@ -551,7 +557,7 @@ class GenericPowerPort(AbstractResource):
 
 
 class GenericPortChannel(AbstractResource):
-    RESOURCE_MODEL = "GenericPortChannel"
+    RESOURCE_MODEL = "Generic Port Channel"
     RELATIVE_PATH_TEMPLATE = "PC"
 
     @property

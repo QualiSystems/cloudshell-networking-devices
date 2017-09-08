@@ -68,4 +68,3 @@ def get_snmp_parameters_from_command_context(resource_config, api, force_decrypt
                 read_community = resource_config.snmp_read_community or ''
 
             return SNMPV2ReadParameters(ip=resource_config.address, snmp_read_community=read_community)
-            # snmp_community=resource_config.snmp_read_community or '')
