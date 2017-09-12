@@ -90,6 +90,17 @@ class TestGenericResource(unittest.TestCase):
                                         unique_id=self.unique_id,
                                         shell_type=self.shell_type)
 
+    def test_generic_resource_no_shell_name(self):
+        name = "test name"
+        unique_id = "test unique id"
+        shell_type = ""
+        resource = GenericResource(shell_name="",
+                                   name=name,
+                                   unique_id=unique_id,
+                                   shell_type=shell_type)
+        self.assertEqual(resource.shell_name, "")
+        self.assertEqual(resource.shell_type, "")
+
     def test_contact_name_getter(self):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
         expected_val = "test value"
