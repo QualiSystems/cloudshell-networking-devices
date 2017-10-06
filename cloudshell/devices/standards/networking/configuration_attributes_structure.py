@@ -133,6 +133,20 @@ class GenericNetworkingResource(object):
         return self.attributes.get("{}SNMP V3 Private Key".format(self.namespace_prefix), None)
 
     @property
+    def snmp_v3_auth_protocol(self):
+        """
+        :rtype: str
+        """
+        return self.attributes.get("{}SNMP V3 Authentication Protocol".format(self.namespace_prefix), None)
+
+    @property
+    def snmp_v3_priv_protocol(self):
+        """
+        :rtype: str
+        """
+        return self.attributes.get("{}SNMP V3 Privacy Protocol".format(self.namespace_prefix), None)
+
+    @property
     def snmp_version(self):
         """
         :rtype: str
