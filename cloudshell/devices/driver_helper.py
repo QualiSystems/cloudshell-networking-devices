@@ -52,7 +52,9 @@ def get_snmp_parameters_from_command_context(resource_config, api, force_decrypt
         return SNMPV3Parameters(ip=resource_config.address,
                                 snmp_user=resource_config.snmp_v3_user or '',
                                 snmp_password=api.DecryptPassword(resource_config.snmp_v3_password).Value or '',
-                                snmp_private_key=resource_config.snmp_v3_private_key or '')
+                                snmp_private_key=resource_config.snmp_v3_private_key or '',
+                                auth_protocol=resource_config.snmp_v3_auth_protocol or 'No Authentication Protocol',
+                                private_key_protocol=resource_config.snmp_v3_priv_protocol or 'No Privacy Protocol')
     else:
         if resource_config.shell_name or force_decrypt:
             write_community = api.DecryptPassword(resource_config.snmp_write_community).Value or ''

@@ -73,7 +73,9 @@ class TestDriverHelper(unittest.TestCase):
         snmpv3parameters_class.assert_called_once_with(ip=config.address,
                                                        snmp_user=config.snmp_v3_user,
                                                        snmp_password=api.DecryptPassword().Value,
-                                                       snmp_private_key=config.snmp_v3_private_key)
+                                                       snmp_private_key=config.snmp_v3_private_key,
+                                                       auth_protocol=config.snmp_v3_auth_protocol,
+                                                       private_key_protocol=config.snmp_v3_priv_protocol)
 
     @mock.patch("cloudshell.devices.driver_helper.SNMPV2WriteParameters")
     def test_get_snmp_parameters_from_command_context_for_snmp_v2_write_community(self, snmpv2parameters_class):
