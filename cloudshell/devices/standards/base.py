@@ -18,7 +18,8 @@ class AbstractResource(object):
         self.shell_name = shell_name
         if self.shell_name:
             self.namespace = "{shell_name}.{resource_model}.".format(shell_name=self.shell_name,
-                                                                     resource_model=self.RESOURCE_MODEL)
+                                                                     resource_model=self.RESOURCE_MODEL
+                                                                     .replace(" ", ""))
         else:
             self.namespace = ""
 
@@ -37,7 +38,7 @@ class AbstractResource(object):
         """Return the name of the CloudShell model"""
         if self.shell_name:
             return "{shell_name}.{resource_model}".format(shell_name=self.shell_name,
-                                                          resource_model=self.RESOURCE_MODEL)
+                                                          resource_model=self.RESOURCE_MODEL.replace(" ", ""))
         else:
             return self.RESOURCE_MODEL
 
