@@ -152,7 +152,7 @@ class SDNControllerResource(AbstractResource):
 
 class GenericSDNSwitch(AbstractResource):
     RESOURCE_MODEL = "GenericSDNSwitch"
-    RELATIVE_PATH_TEMPLATE = "CH"
+    RELATIVE_PATH_TEMPLATE = "OF"
 
     @property
     def model_name(self):
