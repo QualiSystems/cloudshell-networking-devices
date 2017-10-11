@@ -151,7 +151,7 @@ class SDNControllerResource(AbstractResource):
 
 
 class GenericSDNSwitch(AbstractResource):
-    RESOURCE_MODEL = "GenericSDNSwitch"
+    RESOURCE_MODEL = "Generic SDN Switch"
     RELATIVE_PATH_TEMPLATE = "OF"
 
     @property
@@ -170,7 +170,7 @@ class GenericSDNSwitch(AbstractResource):
 
 
 class GenericSDNPort(AbstractResource):
-    RESOURCE_MODEL = "GenericSDNPort"
+    RESOURCE_MODEL = "Generic SDN Port"
     RELATIVE_PATH_TEMPLATE = "P"
 
     @property
