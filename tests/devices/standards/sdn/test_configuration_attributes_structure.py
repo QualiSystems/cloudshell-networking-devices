@@ -2,93 +2,47 @@ import unittest
 
 import mock
 
-from cloudshell.devices.standards.networking.configuration_attributes_structure import GenericNetworkingResource
-from cloudshell.devices.standards.networking.configuration_attributes_structure import create_networking_resource_from_context
+from cloudshell.devices.standards.sdn.configuration_attributes_structure import GenericSDNResource
 
 
 class TestModule(unittest.TestCase):
     def test_create_networking_resource_from_context(self):
-        """Check that method will create and return GenericNetworkingResource instance from given context"""
+        """Check that method will create and return GenericSDNResource instance from given context"""
         shell_name = "test shell name"
-        supported_os = "test OS"
         context = mock.MagicMock()
         # act
-        result = create_networking_resource_from_context(shell_name=shell_name,
-                                                         supported_os=supported_os,
-                                                         context=context)
+        result = GenericSDNResource.from_context(context=context,
+                                                 shell_name=shell_name)
         # verify
-        self.assertIsInstance(result, GenericNetworkingResource)
+        self.assertIsInstance(result, GenericSDNResource)
 
 
-class TestGenericNetworkingResource(unittest.TestCase):
+class TestGenericSDNResource(unittest.TestCase):
     def setUp(self):
         self.shell_name = "test shell name"
         self.name = "test name"
-        self.supported_os = ["test OS"]
-        self.resource = GenericNetworkingResource(shell_name=self.shell_name,
-                                                  name=self.name,
-                                                  supported_os=self.supported_os)
+        self.resource = GenericSDNResource(shell_name=self.shell_name,
+                                           name=self.name)
 
-    def test_backup_location(self):
-        """Check that property will return needed attribute value from the internal attributes dictionary"""
-        expected_val = "test value"
-        self.resource.attributes = {
-            "{}.{}".format(self.shell_name, "Backup Location"): expected_val
-        }
+    def test_parse_ports(self):
+        """Check that method will parse ports string into the list"""
         # act
-        result = self.resource.backup_location
+        result = self.resource._parse_ports(ports="openflow:1::eth1;openflow:2::eth2")
         # verify
-        self.assertEqual(result, expected_val)
+        self.assertEqual(result, [("openflow:1", "eth1"), ("openflow:2", "eth2")])
 
-    def test_backup_type(self):
-        """Check that property will return needed attribute value from the internal attributes dictionary"""
-        expected_val = "test value"
-        self.resource.attributes = {
-            "{}.{}".format(self.shell_name, "Backup Type"): expected_val
-        }
+    def test_parse_ports_empty_ports(self):
+        """Check that method will return an empty list if ports string is empty"""
         # act
-        result = self.resource.backup_type
+        result = self.resource._parse_ports(ports="")
         # verify
-        self.assertEqual(result, expected_val)
-
-    def test_backup_user(self):
-        """Check that property will return needed attribute value from the internal attributes dictionary"""
-        expected_val = "test value"
-        self.resource.attributes = {
-            "{}.{}".format(self.shell_name, "Backup User"): expected_val
-        }
-        # act
-        result = self.resource.backup_user
-        # verify
-        self.assertEqual(result, expected_val)
-
-    def test_backup_password(self):
-        """Check that property will return needed attribute value from the internal attributes dictionary"""
-        expected_val = "test value"
-        self.resource.attributes = {
-            "{}.{}".format(self.shell_name, "Backup Password"): expected_val
-        }
-        # act
-        result = self.resource.backup_password
-        # verify
-        self.assertEqual(result, expected_val)
-
-    def test_vrf_management_name(self):
-        """Check that property will return needed attribute value from the internal attributes dictionary"""
-        expected_val = "test value"
-        self.resource.attributes = {
-            "{}.{}".format(self.shell_name, "VRF Management Name"): expected_val
-        }
-        # act
-        result = self.resource.vrf_management_name
-        # verify
-        self.assertEqual(result, expected_val)
+        self.assertEqual(result, [])
 
     def test_user(self):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
         expected_val = "test value"
         self.resource.attributes = {
-            "{}.{}".format(self.shell_name, "User"): expected_val
+            "{}.{}".format(self.resource.shell_name, "User"): expected_val
         }
         # act
         result = self.resource.user
@@ -99,197 +53,55 @@ class TestGenericNetworkingResource(unittest.TestCase):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
         expected_val = "test value"
         self.resource.attributes = {
-            "{}.{}".format(self.shell_name, "Password"): expected_val
+            "{}.{}".format(self.resource.shell_name, "Password"): expected_val
         }
         # act
         result = self.resource.password
         # verify
         self.assertEqual(result, expected_val)
 
-    def test_enable_password(self):
+    def test_port(self):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
         expected_val = "test value"
         self.resource.attributes = {
-            "{}.{}".format(self.shell_name, "Enable Password"): expected_val
+            "{}.{}".format(self.resource.shell_name, "Controller TCP Port"): expected_val
         }
         # act
-        result = self.resource.enable_password
+        result = self.resource.port
         # verify
         self.assertEqual(result, expected_val)
 
-    def test_power_management(self):
+    def test_scheme(self):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
         expected_val = "test value"
         self.resource.attributes = {
-            "{}.{}".format(self.shell_name, "Power Management"): expected_val
+            "{}.{}".format(self.resource.shell_name, "Scheme"): expected_val
         }
         # act
-        result = self.resource.power_management
+        result = self.resource.scheme
         # verify
         self.assertEqual(result, expected_val)
 
-    def test_sessions_concurrency_limit(self):
+    def test_add_trunk_ports(self):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
-        expected_val = "test value"
+        expected_val = "test parsed ports"
+        self.resource._parse_ports = mock.MagicMock(return_value=expected_val)
         self.resource.attributes = {
-            "{}.{}".format(self.shell_name, "Sessions Concurrency Limit"): expected_val
+            "{}.{}".format(self.resource.shell_name, "Enable Full Trunk Ports"): "test ports"
         }
         # act
-        result = self.resource.sessions_concurrency_limit
+        result = self.resource.add_trunk_ports
         # verify
         self.assertEqual(result, expected_val)
 
-    def test_snmp_read_community(self):
+    def test_remove_trunk_ports(self):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
-        expected_val = "test value"
+        expected_val = "test parsed ports"
+        self.resource._parse_ports = mock.MagicMock(return_value=expected_val)
         self.resource.attributes = {
-            "{}.{}".format(self.shell_name, "SNMP Read Community"): expected_val
+            "{}.{}".format(self.resource.shell_name, "Disable Full Trunk Ports"): "test ports"
         }
         # act
-        result = self.resource.snmp_read_community
+        result = self.resource.remove_trunk_ports
         # verify
         self.assertEqual(result, expected_val)
-
-    def test_snmp_write_community(self):
-        """Check that property will return needed attribute value from the internal attributes dictionary"""
-        expected_val = "test value"
-        self.resource.attributes = {
-            "{}.{}".format(self.shell_name, "SNMP Write Community"): expected_val
-        }
-        # act
-        result = self.resource.snmp_write_community
-        # verify
-        self.assertEqual(result, expected_val)
-
-    def test_snmp_v3_user(self):
-        """Check that property will return needed attribute value from the internal attributes dictionary"""
-        expected_val = "test value"
-        self.resource.attributes = {
-            "{}.{}".format(self.shell_name, "SNMP V3 User"): expected_val
-        }
-        # act
-        result = self.resource.snmp_v3_user
-        # verify
-        self.assertEqual(result, expected_val)
-
-    def test_snmp_v3_password(self):
-        """Check that property will return needed attribute value from the internal attributes dictionary"""
-        expected_val = "test value"
-        self.resource.attributes = {
-            "{}.{}".format(self.shell_name, "SNMP V3 Password"): expected_val
-        }
-        # act
-        result = self.resource.snmp_v3_password
-        # verify
-        self.assertEqual(result, expected_val)
-
-    def test_snmp_v3_private_key(self):
-        """Check that property will return needed attribute value from the internal attributes dictionary"""
-        expected_val = "test value"
-        self.resource.attributes = {
-            "{}.{}".format(self.shell_name, "SNMP V3 Private Key"): expected_val
-        }
-        # act
-        result = self.resource.snmp_v3_private_key
-        # verify
-        self.assertEqual(result, expected_val)
-
-    def test_snmp_version(self):
-        """Check that property will return needed attribute value from the internal attributes dictionary"""
-        expected_val = "test value"
-        self.resource.attributes = {
-            "{}.{}".format(self.shell_name, "SNMP Version"): expected_val
-        }
-        # act
-        result = self.resource.snmp_version
-        # verify
-        self.assertEqual(result, expected_val)
-
-    def test_enable_snmp(self):
-        """Check that property will return needed attribute value from the internal attributes dictionary"""
-        expected_val = "test value"
-        self.resource.attributes = {
-            "{}.{}".format(self.shell_name, "Enable SNMP"): expected_val
-        }
-        # act
-        result = self.resource.enable_snmp
-        # verify
-        self.assertEqual(result, expected_val)
-
-    def test_disable_snmp(self):
-        """Check that property will return needed attribute value from the internal attributes dictionary"""
-        expected_val = "test value"
-        self.resource.attributes = {
-            "{}.{}".format(self.shell_name, "Disable SNMP"): expected_val
-        }
-        # act
-        result = self.resource.disable_snmp
-        # verify
-        self.assertEqual(result, expected_val)
-
-    def test_console_server_ip_address(self):
-        """Check that property will return needed attribute value from the internal attributes dictionary"""
-        expected_val = "test value"
-        self.resource.attributes = {
-            "{}.{}".format(self.shell_name, "Console Server IP Address"): expected_val
-        }
-        # act
-        result = self.resource.console_server_ip_address
-        # verify
-        self.assertEqual(result, expected_val)
-
-    def test_console_user(self):
-        """Check that property will return needed attribute value from the internal attributes dictionary"""
-        expected_val = "test value"
-        self.resource.attributes = {
-            "{}.{}".format(self.shell_name, "Console User"): expected_val
-        }
-        # act
-        result = self.resource.console_user
-        # verify
-        self.assertEqual(result, expected_val)
-
-    def test_console_port(self):
-        """Check that property will return needed attribute value from the internal attributes dictionary"""
-        expected_val = "test value"
-        self.resource.attributes = {
-            "{}.{}".format(self.shell_name, "Console Port"): expected_val
-        }
-        # act
-        result = self.resource.console_port
-        # verify
-        self.assertEqual(result, expected_val)
-
-    def test_console_password(self):
-        """Check that property will return needed attribute value from the internal attributes dictionary"""
-        expected_val = "test value"
-        self.resource.attributes = {
-            "{}.{}".format(self.shell_name, "Console Password"): expected_val
-        }
-        # act
-        result = self.resource.console_password
-        # verify
-        self.assertEqual(result, expected_val)
-
-    def test_cli_connection_type(self):
-        """Check that property will return needed attribute value from the internal attributes dictionary"""
-        expected_val = "test value"
-        self.resource.attributes = {
-            "{}.{}".format(self.shell_name, "CLI Connection Type"): expected_val
-        }
-        # act
-        result = self.resource.cli_connection_type
-        # verify
-        self.assertEqual(result, expected_val)
-
-    def test_cli_tcp_port(self):
-        """Check that property will return needed attribute value from the internal attributes dictionary"""
-        expected_val = "test value"
-        self.resource.attributes = {
-            "{}.{}".format(self.shell_name, "CLI TCP Port"): expected_val
-        }
-        # act
-        result = self.resource.cli_tcp_port
-        # verify
-        self.assertEqual(result, expected_val)
-
