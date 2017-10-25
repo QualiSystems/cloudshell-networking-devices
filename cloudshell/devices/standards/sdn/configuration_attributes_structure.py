@@ -82,14 +82,6 @@ class GenericSDNResource(object):
         ports = self.attributes.get("{}Disable Full Trunk Ports".format(self.namespace_prefix), None)
         return self._parse_ports(ports=ports)
 
-    @property
-    def model_name(self):
-        """SDN Controller model name
-
-        :rtype: str
-        """
-        return self.attributes.get("{}Model Name".format(self.namespace_prefix), None)
-
     @classmethod
     def from_context(cls, context, shell_name=None):
         """Create an instance of Generic SDN Resource from the given context
