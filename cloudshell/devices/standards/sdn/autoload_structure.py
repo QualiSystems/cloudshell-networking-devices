@@ -134,21 +134,6 @@ class SDNControllerResource(AbstractResource):
         """Set SDN Controller model name"""
         self.attributes["{}Model Name".format(self.shell_type)] = value
 
-    @classmethod
-    def from_context(cls, context, shell_name=None):
-        """Create an instance of SDN Resource from the given context
-
-        :param cloudshell.shell.core.driver_context.ResourceCommandContext context:
-        :param str shell_name: shell Name
-        :rtype: GenericSDNResource
-        """
-        result = cls(address=context.resource.address,
-                     shell_name=shell_name,
-                     name=context.resource.name)
-
-        result.attributes = context.resource.attributes.copy()
-        return result
-
 
 class GenericSDNSwitch(AbstractResource):
     RESOURCE_MODEL = "Generic SDN Switch"
