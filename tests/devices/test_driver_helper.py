@@ -117,3 +117,17 @@ class TestDriverHelper(unittest.TestCase):
 
         api.DecryptPassword.assert_called_with(config.snmp_read_community)
         self.assertTrue(api.DecryptPassword.call_count == 2)
+
+    def test_parse_custom_commands(self):
+        """Check that method will parse string into list"""
+        # act
+        result = driver_helper.parse_custom_commands(command="test command1;test command2")
+        # verify
+        self.assertEqual(result, ["test command1", "test command2"])
+
+    def test_parse_custom_commands_with_empty_command(self):
+        """Check that method will return an empty list if command string is empty"""
+        # act
+        result = driver_helper.parse_custom_commands(command="")
+        # verify
+        self.assertEqual(result, [])
