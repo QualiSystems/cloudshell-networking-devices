@@ -70,3 +70,16 @@ def get_snmp_parameters_from_command_context(resource_config, api, force_decrypt
                 read_community = resource_config.snmp_read_community or ''
 
             return SNMPV2ReadParameters(ip=resource_config.address, snmp_read_community=read_community)
+
+
+def parse_custom_commands(command, separator=";"):
+    """Parse run custom command string into the commands list
+
+    :param str command: run custom [config] command(s)
+    :param str separator: commands separator in the string
+    :rtype: list[str]
+    """
+    if not command:
+        return []
+
+    return command.strip(separator).split(separator)
