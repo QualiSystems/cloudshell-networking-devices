@@ -110,6 +110,19 @@ class GenericResource(AbstractResource):
 
         self.attributes["{}Model".format(self.shell_type)] = value
 
+    @property
+    def model_name(self):
+        """ Return the device model name. This information is typically used for abstract resource filtering """
+
+        return self.attributes.get("{}Model Name".format(self.shell_type), None)
+
+    @model.setter
+    @attr_length_validator
+    def model_name(self, value=""):
+        """ Set the device model name. This information is typically used for abstract resource filtering """
+
+        self.attributes["{}Model Name".format(self.shell_type)] = value
+
 
 class GenericChassis(AbstractResource):
     RESOURCE_MODEL = "Generic Chassis"
