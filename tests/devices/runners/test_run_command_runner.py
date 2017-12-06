@@ -7,23 +7,10 @@ from cloudshell.devices.runners.run_command_runner import RunCommandRunner
 
 class TestRunCommandRunner(unittest.TestCase):
     def setUp(self):
-        class TestedClass(RunCommandRunner):
-            @property
-            def cli_handler(self):
-                pass
-
-        self.tested_class = TestedClass
+        self.tested_class = RunCommandRunner
         self.logger = mock.MagicMock()
-        self.runner = TestedClass(logger=self.logger)
-
-    def test_cli_handler(self):
-        """Check that instance can't be instantiated without implementation of the "cli_handler" method"""
-        class TestedClass(RunCommandRunner):
-            pass
-
-        with self.assertRaisesRegexp(TypeError, "Can't instantiate abstract class TestedClass with "
-                                                "abstract methods cli_handler"):
-            TestedClass(logger=self.logger)
+        self.cli_handler = mock.MagicMock()
+        self.runner = RunCommandRunner(logger=self.logger, cli_handler=self.cli_handler)
 
     @mock.patch("cloudshell.devices.runners.run_command_runner.RunCommandFlow")
     def test_run_custom_command(self, run_command_flow_class):

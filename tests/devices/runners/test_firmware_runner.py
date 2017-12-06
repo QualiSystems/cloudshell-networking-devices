@@ -1,4 +1,5 @@
 import unittest
+from magicmock import Logger
 
 import mock
 
@@ -16,9 +17,10 @@ class TestFirmwareRunner(unittest.TestCase):
             def load_firmware_flow(self):
                 pass
 
-        self.logger = mock.MagicMock()
+        self.logger = mock.create_autospec(Logger)
+        self.cli_handler = mock.MagicMock()
         self.tested_class = TestedClass
-        self.runner = TestedClass(logger=self.logger)
+        self.runner = TestedClass(logger=self.logger, cli_handler=self.cli_handler)
 
     def test_abstract_methods(self):
         """Check that instance can't be instantiated without implementation of all abstract methods"""
@@ -26,8 +28,8 @@ class TestFirmwareRunner(unittest.TestCase):
             pass
 
         with self.assertRaisesRegexp(TypeError, "Can't instantiate abstract class TestedClass with "
-                                                "abstract methods cli_handler, load_firmware_flow"):
-            TestedClass(logger=self.logger)
+                                                "abstract methods load_firmware_flow"):
+            TestedClass(logger=self.logger, cli_handler=self.cli_handler)
 
     @mock.patch("cloudshell.devices.runners.firmware_runner.UrlParser")
     def test_load_firmware(self, url_parser_class):
