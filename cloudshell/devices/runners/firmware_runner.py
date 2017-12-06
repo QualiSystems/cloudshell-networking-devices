@@ -9,21 +9,22 @@ from cloudshell.devices.runners.interfaces.firmware_runner_interface import Firm
 
 
 class FirmwareRunner(FirmwareRunnerInterface):
-    def __init__(self, logger):
+    def __init__(self, logger, cli_handler):
         """Handle firmware upgrade process
 
         :param qs_logger logger: logger
         """
         self._logger = logger
         self._timeout = 3600
+        self._cli_handler = cli_handler
 
-    @abstractproperty
+    @property
     def cli_handler(self):
         """ CLI Handler property
         :return: CLI handler
         """
 
-        pass
+        return self._cli_handler
 
     @abstractproperty
     def load_firmware_flow(self):

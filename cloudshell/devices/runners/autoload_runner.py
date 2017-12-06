@@ -11,11 +11,8 @@ class AutoloadRunner(AutoloadOperationsInterface):
 
     def __init__(self, resource_config):
         """
-        Facilitate SNMP autoload,
-        :param supported_os:
-        :param context:
-        :param Cli cli:
-        :param QualiSnmp snmp_handler:
+        Facilitate SNMP autoload
+        :param resource_config:
         """
 
         self.resource_config = resource_config
@@ -34,6 +31,7 @@ class AutoloadRunner(AutoloadOperationsInterface):
 
         :return: AutoLoadDetails object
         """
+
         return self.autoload_flow.execute_flow(self.resource_config.supported_os,
                                                self.resource_config.shell_name,
                                                self.resource_config.family,

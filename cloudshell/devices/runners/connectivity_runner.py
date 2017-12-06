@@ -24,17 +24,18 @@ class ConnectivityRunner(ConnectivityOperationsInterface):
                                                                  ("connectionParams", "mode"),
                                                                  ("actionTarget", "fullAddress")]
 
-    def __init__(self, logger):
+    def __init__(self, logger, cli_handler):
         self._logger = logger
         self.result = defaultdict(list)
+        self._cli_handler = cli_handler
 
-    @abstractproperty
+    @property
     def cli_handler(self):
         """ CLI Handler property
         :return: CLI handler
         """
 
-        pass
+        return self._cli_handler
 
     @abstractproperty
     def add_vlan_flow(self):

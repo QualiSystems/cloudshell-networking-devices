@@ -28,18 +28,19 @@ class ConfigurationRunner(ConfigurationOperationsInterface):
                                      ('saved_artifact', 'artifact_type'), ('restore_rules', 'requires_same_resource')]
     DEFAULT_FILE_SYSTEM = "File System"
 
-    def __init__(self, logger, resource_config, api):
+    def __init__(self, logger, resource_config, api, cli_handler):
         self._logger = logger
         self._api = api
         self.resource_config = resource_config
+        self._cli_handler = cli_handler
 
-    @abstractproperty
+    @property
     def cli_handler(self):
         """ CLI Handler property
         :return: CLI handler
         """
 
-        pass
+        return self._cli_handler
 
     @abstractproperty
     def save_flow(self):
