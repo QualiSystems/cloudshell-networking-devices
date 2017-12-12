@@ -1,7 +1,7 @@
 import unittest
-from magicmock import Logger
 
 import mock
+from cloudshell.core.logger import qs_logger
 
 from cloudshell.devices.runners.firmware_runner import FirmwareRunner
 
@@ -10,14 +10,10 @@ class TestFirmwareRunner(unittest.TestCase):
     def setUp(self):
         class TestedClass(FirmwareRunner):
             @property
-            def cli_handler(self):
-                pass
-
-            @property
             def load_firmware_flow(self):
                 pass
 
-        self.logger = mock.create_autospec(Logger)
+        self.logger = mock.MagicMock()
         self.cli_handler = mock.MagicMock()
         self.tested_class = TestedClass
         self.runner = TestedClass(logger=self.logger, cli_handler=self.cli_handler)
