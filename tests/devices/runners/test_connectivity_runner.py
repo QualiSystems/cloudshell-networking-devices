@@ -9,6 +9,7 @@ from cloudshell.devices.runners.connectivity_runner import ConnectivityRunner
 class TestConnectivityRunner(unittest.TestCase):
     def setUp(self):
         self.logger = mock.MagicMock()
+        self.cli_handler = mock.MagicMock()
 
         class TestedConnectivityRunner(ConnectivityRunner):
             def cli_handler(self):
@@ -20,7 +21,7 @@ class TestConnectivityRunner(unittest.TestCase):
             def remove_vlan_flow(self):
                 pass
 
-        self.connectivity_runner = TestedConnectivityRunner(logger=self.logger)
+        self.connectivity_runner = TestedConnectivityRunner(logger=self.logger, cli_handler=self.cli_handler)
 
     def test_abstract_methods(self):
         """Check that instance can't be instantiated without implementation of the all abstract methods"""
@@ -28,8 +29,8 @@ class TestConnectivityRunner(unittest.TestCase):
             pass
 
         with self.assertRaisesRegexp(TypeError, "Can't instantiate abstract class TestedClass with abstract methods "
-                                                "add_vlan_flow, cli_handler, remove_vlan_flow"):
-            TestedClass(logger=self.logger)
+                                                "add_vlan_flow, remove_vlan_flow"):
+            TestedClass(logger=self.logger, cli_handler=self.cli_handler)
 
     def test_get_vlan_list(self):
         """Check that method will return list of valid VLANs if all od them are valid"""

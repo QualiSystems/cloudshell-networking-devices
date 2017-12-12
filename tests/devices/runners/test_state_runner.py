@@ -10,25 +10,11 @@ class TestStateRunner(unittest.TestCase):
         self.logger = mock.MagicMock()
         self.api = mock.MagicMock()
         self.resource_config = mock.MagicMock()
+        self.cli_handler = mock.MagicMock()
 
-        class TestedStateRunner(StateRunner):
-            def cli_handler(self):
-                pass
-
-        self.state_runner = TestedStateRunner(logger=self.logger,
-                                              api=self.api,
-                                              resource_config=self.resource_config)
-
-    def test_abstract_methods(self):
-        """Check that instance can't be instantiated without implementation of the all abstract methods"""
-        class TestedClass(StateRunner):
-            pass
-
-        with self.assertRaisesRegexp(TypeError, "Can't instantiate abstract class TestedClass with "
-                                                "abstract methods cli_handler"):
-            TestedClass(logger=self.logger,
-                        api=self.api,
-                        resource_config=self.resource_config)
+        self.state_runner = StateRunner(logger=self.logger,
+                                        api=self.api,
+                                        resource_config=self.resource_config, cli_handler=self.cli_handler)
 
     def test_shutdown(self):
         """Check that method will raise exception"""

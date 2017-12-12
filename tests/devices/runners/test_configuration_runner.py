@@ -18,6 +18,7 @@ class TestConfigurationRunner(unittest.TestCase):
     def setUp(self):
         self.logger = mock.MagicMock()
         self.resource_config = mock.MagicMock()
+        self.cli_handler = mock.MagicMock()
         self.api = mock.MagicMock()
 
         class TestedConfigurationRunner(ConfigurationRunner):
@@ -35,7 +36,7 @@ class TestConfigurationRunner(unittest.TestCase):
 
         self.runner = TestedConfigurationRunner(logger=self.logger,
                                                 resource_config=self.resource_config,
-                                                api=self.api)
+                                                cli_handler=self.cli_handler, api=self.api)
 
     def test_abstract_methods(self):
         """Check that instance can't be instantiated without implementation of the all abstract methods"""
@@ -43,10 +44,10 @@ class TestConfigurationRunner(unittest.TestCase):
             pass
 
         with self.assertRaisesRegexp(TypeError, "Can't instantiate abstract class TestedClass with abstract methods "
-                                                "cli_handler, file_system, restore_flow, save_flow"):
+                                                "file_system, restore_flow, save_flow"):
             TestedClass(logger=self.logger,
                         resource_config=self.resource_config,
-                        api=self.api)
+                        api=self.api, cli_handler=self.cli_handler)
 
     @mock.patch("cloudshell.devices.runners.configuration_runner.time")
     def test_save_returns_destination_filename(self, time):

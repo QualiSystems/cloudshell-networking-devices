@@ -8,20 +8,21 @@ from cloudshell.devices.runners.interfaces.run_command_runner_interface import R
 
 
 class RunCommandRunner(RunCommandInterface):
-    def __init__(self, logger):
+    def __init__(self, logger, cli_handler):
         """Create RunCommandOperations
 
         :param logger: QsLogger object
         """
         self._logger = logger
+        self._cli_handler = cli_handler
 
-    @abstractproperty
+    @property
     def cli_handler(self):
         """ CLI Handler property
         :return: CLI handler
         """
 
-        pass
+        return self._cli_handler
 
     @property
     def run_command_flow(self):

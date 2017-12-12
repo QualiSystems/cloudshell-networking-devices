@@ -8,19 +8,20 @@ from cloudshell.devices.runners.interfaces.state_runner_interface import StateOp
 
 
 class StateRunner(StateOperationsInterface):
-    def __init__(self, logger, api, resource_config):
+    def __init__(self, logger, api, resource_config, cli_handler):
         self._logger = logger
         self._api = api
         self.resource_config = resource_config
         self._resource_name = self.resource_config.name
+        self._cli_handler = cli_handler
 
-    @abstractproperty
+    @property
     def cli_handler(self):
         """ CLI Handler property
         :return: CLI handler
         """
 
-        pass
+        return self._cli_handler
 
     def health_check(self):
         """ Verify that device is accessible over CLI by sending ENTER for cli session """
