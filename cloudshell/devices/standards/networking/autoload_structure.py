@@ -116,7 +116,7 @@ class GenericResource(AbstractResource):
 
         return self.attributes.get("{}Model Name".format(self.shell_type), None)
 
-    @model.setter
+    @model_name.setter
     @attr_length_validator
     def model_name(self, value=""):
         """ Set the device model name. This information is typically used for abstract resource filtering """
