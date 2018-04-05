@@ -12,7 +12,6 @@ class TrafficGeneratorVChassisResource(object):
         """
         self.address = address
         self.family = family
-        self.shell_type = shell_type
         self.shell_name = shell_name
         self.fullname = fullname
         self.name = name
@@ -20,8 +19,10 @@ class TrafficGeneratorVChassisResource(object):
 
         if shell_name:
             self.namespace_prefix = "{}.".format(self.shell_name)
+            self.shell_type = "{}.".format(shell_type)
         else:
             self.namespace_prefix = ""
+            self.shell_type = ""
 
     @property
     def user(self):
