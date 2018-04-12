@@ -2,7 +2,7 @@ from cloudshell.devices.standards.base import AbstractResource
 from cloudshell.devices.standards.validators import attr_length_validator
 
 
-AVAILABLE_SHELL_TYPES = ["CS_VirtualTrafficGeneratorChassis"]
+AVAILABLE_SHELL_TYPES = ["CS_VirtualTrafficGeneratorChassis", "CS_VirtualTrafficGeneratorPort"]
 
 
 class Chassis(AbstractResource):
@@ -52,9 +52,23 @@ class Port(AbstractResource):
     RESOURCE_MODEL = "Virtual Traffic Generator Port"
     RELATIVE_PATH_TEMPLATE = "P"
 
+    def __init__(self, shell_name, name, unique_id, shell_type="CS_VirtualTrafficGeneratorPort"):
+        super(Port, self).__init__(shell_name, name, unique_id)
+
+        if shell_name:
+            if shell_type in AVAILABLE_SHELL_TYPES:
+                self.shell_type = "{}.".format(shell_type)
+            else:
+                raise Exception(self.__class__.__name__, "Unavailable shell type {shell_type}."
+                                                         "Shell type should be one of: {avail}"
+                                .format(shell_type=shell_type, avail=", ".join(AVAILABLE_SHELL_TYPES)))
+        else:
+            self.shell_name = ""
+            self.shell_type = ""
+
     @property
     def logical_name(self):
-        return self.attributes.get("{}Logical Name".format(self.namespace), None)
+        return self.attributes.get("{}Logical Name".format(self.shell_type), None)
 
     @logical_name.setter
     @attr_length_validator
@@ -64,7 +78,7 @@ class Port(AbstractResource):
         :param value:
         :return:
         """
-        self.attributes["{}Logical Name".format(self.namespace)] = value
+        self.attributes["{}Logical Name".format(self.shell_type)] = value
 
     @property
     def mac_address(self):
@@ -72,7 +86,7 @@ class Port(AbstractResource):
 
         :return:
         """
-        return self.attributes.get("{}MAC Address".format(self.namespace), None)
+        return self.attributes.get("{}MAC Address".format(self.shell_type), None)
 
     @mac_address.setter
     @attr_length_validator
@@ -82,11 +96,11 @@ class Port(AbstractResource):
         :param value:
         :return:
         """
-        self.attributes["{}MAC Address".format(self.namespace)] = value
+        self.attributes["{}MAC Address".format(self.shell_type)] = value
 
     @property
     def requested_vnic_name(self):
-        return self.attributes.get("{}Requested vNIC Name".format(self.namespace), None)
+        return self.attributes.get("{}Requested vNIC Name".format(self.shell_type), None)
 
     @requested_vnic_name.setter
     @attr_length_validator
@@ -96,4 +110,4 @@ class Port(AbstractResource):
         :param value:
         :return:
         """
-        self.attributes["{}Requested vNIC Name".format(self.namespace)] = value
+        self.attributes["{}Requested vNIC Name".format(self.shell_type)] = value
