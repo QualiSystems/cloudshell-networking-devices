@@ -42,7 +42,7 @@ class AutoloadRunner(AutoloadOperationsInterface):
                     break
 
         self._logger.info('Device Vendor: "{}", Model: "{}", OS Version: "{}"'.format(
-            attrs['Vendor'], attrs['Model'], attrs['OS Version'],
+            attrs.get('Vendor', ''), attrs.get('Model', ''), attrs.get('OS Version', ''),
         ))
 
     def discover(self):
