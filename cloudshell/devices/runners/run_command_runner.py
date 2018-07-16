@@ -1,8 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from abc import abstractproperty
-
 from cloudshell.devices.flows.cli_action_flows import RunCommandFlow
 from cloudshell.devices.runners.interfaces.run_command_runner_interface import RunCommandInterface
 
@@ -35,6 +33,7 @@ class RunCommandRunner(RunCommandInterface):
         :return: result of command execution
         """
 
+        self._logger.info('Executing command "run_custom_command"')
         return self.run_command_flow.execute_flow(custom_command=custom_command)
 
     def run_custom_config_command(self, custom_command):
@@ -44,4 +43,5 @@ class RunCommandRunner(RunCommandInterface):
         :return: result of command execution
         """
 
+        self._logger.info('Executing command "run_custom_config_command"')
         return self.run_command_flow.execute_flow(custom_command=custom_command, is_config=True)

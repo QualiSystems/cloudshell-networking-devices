@@ -28,8 +28,8 @@ class FirmwareRunner(FirmwareRunnerInterface):
 
     @abstractproperty
     def load_firmware_flow(self):
-        """ Load Firmaware flow property
-        :return: LoadFirmawareFlow object
+        """ Load Firmware flow property
+        :return: LoadFirmwareFlow object
         """
 
         pass
@@ -46,6 +46,8 @@ class FirmwareRunner(FirmwareRunnerInterface):
         :param vrf_management_name: VRF Name
         :return: status / exception
         """
+
+        self._logger.info('Executing command "load_firmware"')
 
         url = UrlParser.parse_url(path)
         required_keys = [UrlParser.FILENAME, UrlParser.HOSTNAME, UrlParser.SCHEME]

@@ -76,6 +76,8 @@ class ConfigurationRunner(ConfigurationOperationsInterface):
         :rtype: OrchestrationSavedArtifact or str
         """
 
+        self._logger.info('Executing command "save"')
+
         if hasattr(self.resource_config, "vrf_management_name"):
             vrf_management_name = vrf_management_name or self.resource_config.vrf_management_name
 
@@ -106,6 +108,8 @@ class ConfigurationRunner(ConfigurationOperationsInterface):
         :return: exception on crash
         """
 
+        self._logger.info('Executing command "restore"')
+
         if hasattr(self.resource_config, "vrf_management_name"):
             vrf_management_name = vrf_management_name or self.resource_config.vrf_management_name
 
@@ -125,6 +129,8 @@ class ConfigurationRunner(ConfigurationOperationsInterface):
         :rtype json
         """
 
+        self._logger.info('Executing command "orchestration_save"')
+
         save_params = {'folder_path': '', 'configuration_type': 'running', 'return_artifact': True}
         params = dict()
         if custom_params:
@@ -132,7 +138,6 @@ class ConfigurationRunner(ConfigurationOperationsInterface):
 
         save_params.update(params.get('custom_params', {}))
         save_params['folder_path'] = self.get_path(save_params['folder_path'])
-        self._logger.info('Start saving configuration')
 
         saved_artifact = self.save(**save_params)
 
@@ -151,6 +156,8 @@ class ConfigurationRunner(ConfigurationOperationsInterface):
         :param saved_artifact_info: json with all required data to restore configuration on the device
         :param custom_params: custom parameters
         """
+
+        self._logger.info('Executing command "orchestration_restore"')
 
         if saved_artifact_info is None or saved_artifact_info == '':
             raise Exception('ConfigurationOperations', 'saved_artifact_info is None or empty')
