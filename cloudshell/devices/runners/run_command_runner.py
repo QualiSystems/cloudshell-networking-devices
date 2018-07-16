@@ -33,8 +33,10 @@ class RunCommandRunner(RunCommandInterface):
         :return: result of command execution
         """
 
-        self._logger.info('Executing command "run_custom_command"')
-        return self.run_command_flow.execute_flow(custom_command=custom_command)
+        self._logger.info('Start command "run_custom_command"')
+        response = self.run_command_flow.execute_flow(custom_command=custom_command)
+        self._logger.info('Command "run_custom_command" completed')
+        return response
 
     def run_custom_config_command(self, custom_command):
         """ Execute custom command in configuration mode on device
@@ -43,5 +45,7 @@ class RunCommandRunner(RunCommandInterface):
         :return: result of command execution
         """
 
-        self._logger.info('Executing command "run_custom_config_command"')
-        return self.run_command_flow.execute_flow(custom_command=custom_command, is_config=True)
+        self._logger.info('Start command "run_custom_config_command"')
+        response = self.run_command_flow.execute_flow(custom_command=custom_command, is_config=True)
+        self._logger.info('Command "run_custom_config_command" completed')
+        return response

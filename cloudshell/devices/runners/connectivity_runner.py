@@ -61,6 +61,9 @@ class ConnectivityRunner(ConnectivityOperationsInterface):
         :return Serialized DriverResponseRoot to json
         :rtype json
         """
+
+        self._logger.info('Start command "ApplyConnectivityChanges"')
+
         if request is None or request == "":
             raise Exception(self.__class__.__name__, "request is None or empty")
 
@@ -139,7 +142,10 @@ class ConnectivityRunner(ConnectivityOperationsInterface):
 
         driver_response.actionResults = request_result
         driver_response_root.driverResponse = driver_response
-        return serialize_to_json(driver_response_root)  # .replace("[true]", "true")
+        response = serialize_to_json(driver_response_root)  # .replace("[true]", "true")
+
+        self._logger.info('Command "ApplyConnectivityChanges" finished')
+        return response
 
     def _validate_request_action(self, action):
         """ Validate action from the request json,

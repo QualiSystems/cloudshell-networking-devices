@@ -26,7 +26,7 @@ class StateRunner(StateOperationsInterface):
     def health_check(self):
         """ Verify that device is accessible over CLI by sending ENTER for cli session """
 
-        self._logger.info('Start health check on {} resource'.format(self._resource_name))
+        self._logger.info('Start command "health_check" on {} resource'.format(self._resource_name))
         api_response = 'Online'
 
         result = 'Health check on resource {}'.format(self._resource_name)
@@ -44,7 +44,7 @@ class StateRunner(StateOperationsInterface):
         except Exception:
             self._logger.error('Cannot update {} resource status on portal'.format(self._resource_name))
 
-        self._logger.info('Health check on {} resource completed'.format(self._resource_name))
+        self._logger.info('Command "health_check" completed on {} resource'.format(self._resource_name))
         return result
 
     def shutdown(self):

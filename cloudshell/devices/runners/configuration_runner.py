@@ -76,7 +76,7 @@ class ConfigurationRunner(ConfigurationOperationsInterface):
         :rtype: OrchestrationSavedArtifact or str
         """
 
-        self._logger.info('Executing command "save"')
+        self._logger.info('Start command "save"')
 
         if hasattr(self.resource_config, "vrf_management_name"):
             vrf_management_name = vrf_management_name or self.resource_config.vrf_management_name
@@ -96,6 +96,8 @@ class ConfigurationRunner(ConfigurationOperationsInterface):
             artifact_type = full_path.split(':')[0]
             identifier = full_path.replace("{0}:".format(artifact_type), "")
             return OrchestrationSavedArtifact(identifier=identifier, artifact_type=artifact_type)
+
+        self._logger.info('Command "save" completed')
         return destination_filename
 
     def restore(self, path, configuration_type="running", restore_method="override", vrf_management_name=None):
@@ -108,7 +110,7 @@ class ConfigurationRunner(ConfigurationOperationsInterface):
         :return: exception on crash
         """
 
-        self._logger.info('Executing command "restore"')
+        self._logger.info('Start command "restore"')
 
         if hasattr(self.resource_config, "vrf_management_name"):
             vrf_management_name = vrf_management_name or self.resource_config.vrf_management_name
@@ -120,6 +122,8 @@ class ConfigurationRunner(ConfigurationOperationsInterface):
                                        restore_method=restore_method.lower(),
                                        vrf_management_name=vrf_management_name)
 
+        self._logger.info('Command "restore" completed')
+
     def orchestration_save(self, mode="shallow", custom_params=None):
         """Orchestration Save command
 
@@ -129,7 +133,7 @@ class ConfigurationRunner(ConfigurationOperationsInterface):
         :rtype json
         """
 
-        self._logger.info('Executing command "orchestration_save"')
+        self._logger.info('Start command "orchestration_save"')
 
         save_params = {'folder_path': '', 'configuration_type': 'running', 'return_artifact': True}
         params = dict()
@@ -148,7 +152,10 @@ class ConfigurationRunner(ConfigurationOperationsInterface):
         save_response = OrchestrationSaveResult(saved_artifacts_info=saved_artifact_info)
         self._validate_artifact_info(saved_artifact_info)
 
-        return serialize_to_json(save_response)
+        response = serialize_to_json(save_response)
+
+        self._logger.info('Command "orchestration_save" completed')
+        return response
 
     def orchestration_restore(self, saved_artifact_info, custom_params=None):
         """Orchestration restore
@@ -157,7 +164,7 @@ class ConfigurationRunner(ConfigurationOperationsInterface):
         :param custom_params: custom parameters
         """
 
-        self._logger.info('Executing command "orchestration_restore"')
+        self._logger.info('Start command "orchestration_restore"')
 
         if saved_artifact_info is None or saved_artifact_info == '':
             raise Exception('ConfigurationOperations', 'saved_artifact_info is None or empty')
@@ -197,6 +204,7 @@ class ConfigurationRunner(ConfigurationOperationsInterface):
             restore_params['configuration_type'] = 'startup'
 
         self.restore(**restore_params)
+        self._logger.info('Command "orchestration_restore" completed')
 
     def get_path(self, path=''):
         """

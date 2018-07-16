@@ -53,10 +53,13 @@ class AutoloadRunner(AutoloadOperationsInterface):
         :rtype: cloudshell.shell.core.driver_context.AutoLoadDetails
         """
 
+        self._logger.info('Start command "Autoload"')
+
         details = self.autoload_flow.execute_flow(self.resource_config.supported_os,
                                                   self.resource_config.shell_name,
                                                   self.resource_config.family,
                                                   self.resource_config.name)
 
         self._log_device_details(details)
+        self._logger.info('Command "Autoload" completed')
         return details

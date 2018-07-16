@@ -3,7 +3,6 @@
 
 from abc import abstractproperty
 
-from cloudshell.core.logger import qs_logger
 from cloudshell.devices.networking_utils import UrlParser
 from cloudshell.devices.runners.interfaces.firmware_runner_interface import FirmwareRunnerInterface
 
@@ -12,7 +11,7 @@ class FirmwareRunner(FirmwareRunnerInterface):
     def __init__(self, logger, cli_handler):
         """Handle firmware upgrade process
 
-        :param qs_logger logger: logger
+        :param logging.Logger logger: logger
         """
         self._logger = logger
         self._timeout = 3600
@@ -47,7 +46,7 @@ class FirmwareRunner(FirmwareRunnerInterface):
         :return: status / exception
         """
 
-        self._logger.info('Executing command "load_firmware"')
+        self._logger.info('Start command "load_firmware"')
 
         url = UrlParser.parse_url(path)
         required_keys = [UrlParser.FILENAME, UrlParser.HOSTNAME, UrlParser.SCHEME]
@@ -56,3 +55,5 @@ class FirmwareRunner(FirmwareRunnerInterface):
             raise Exception(self.__class__.__name__, "Path is wrong or empty")
 
         self.load_firmware_flow.execute_flow(path, vrf_management_name, self._timeout)
+
+        self._logger.info('Command "load_firmware" completed')
