@@ -14,7 +14,7 @@ __all__ = ["GenericResource", "GenericChassis",
 
 
 class GenericResource(AbstractResource):
-    RESOURCE_MODEL = "Generic Resource"
+    RESOURCE_MODEL = "GenericResource"
     RELATIVE_PATH_TEMPLATE = ""
 
     def __init__(self, shell_name, name, unique_id, shell_type="CS_Switch"):
@@ -125,7 +125,7 @@ class GenericResource(AbstractResource):
 
 
 class GenericChassis(AbstractResource):
-    RESOURCE_MODEL = "Generic Chassis"
+    RESOURCE_MODEL = "GenericChassis"
     RELATIVE_PATH_TEMPLATE = "CH"
 
     @property
@@ -159,7 +159,7 @@ class GenericChassis(AbstractResource):
 
 
 class GenericModule(AbstractResource):
-    RESOURCE_MODEL = "Generic Module"
+    RESOURCE_MODEL = "GenericModule"
     RELATIVE_PATH_TEMPLATE = "M"
 
     @property
@@ -212,7 +212,7 @@ class GenericModule(AbstractResource):
 
 
 class GenericSubModule(AbstractResource):
-    RESOURCE_MODEL = "Generic Sub Module"
+    RESOURCE_MODEL = "GenericSubModule"
     RELATIVE_PATH_TEMPLATE = "SM"
 
     @property
@@ -265,7 +265,7 @@ class GenericSubModule(AbstractResource):
 
 
 class GenericPort(AbstractResource):
-    RESOURCE_MODEL = "Generic Port"
+    RESOURCE_MODEL = "GenericPort"
     RELATIVE_PATH_TEMPLATE = "P"
     FAMILY_NAME = 'CS_Port'
 
@@ -436,7 +436,7 @@ class GenericPort(AbstractResource):
 
 
 class GenericPowerPort(AbstractResource):
-    RESOURCE_MODEL = "Generic Power Port"
+    RESOURCE_MODEL = "GenericPowerPort"
     RELATIVE_PATH_TEMPLATE = "PP"
 
     @property
@@ -505,7 +505,7 @@ class GenericPowerPort(AbstractResource):
 
 
 class GenericPortChannel(AbstractResource):
-    RESOURCE_MODEL = "Generic Port Channel"
+    RESOURCE_MODEL = "GenericPortChannel"
     RELATIVE_PATH_TEMPLATE = "PC"
 
     @property

@@ -5,7 +5,7 @@ AVAILABLE_SHELL_TYPES = ["CS_SDNController"]
 
 
 class SDNControllerResource(AbstractResource):
-    RESOURCE_MODEL = "SDN Controller"
+    RESOURCE_MODEL = "SDNController"
     RELATIVE_PATH_TEMPLATE = ""
 
     def __init__(self, shell_name, name, unique_id, shell_type="CS_SDNController"):
@@ -39,7 +39,7 @@ class SDNControllerResource(AbstractResource):
 
 
 class GenericSDNSwitch(AbstractResource):
-    RESOURCE_MODEL = "Generic SDN Switch"
+    RESOURCE_MODEL = "GenericSDNSwitch"
     RELATIVE_PATH_TEMPLATE = "OF"
 
     @property
@@ -58,7 +58,7 @@ class GenericSDNSwitch(AbstractResource):
 
 
 class GenericSDNPort(AbstractResource):
-    RESOURCE_MODEL = "Generic SDN Port"
+    RESOURCE_MODEL = "GenericSDNPort"
     RELATIVE_PATH_TEMPLATE = "P"
 
     @property

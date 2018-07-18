@@ -6,7 +6,7 @@ AVAILABLE_SHELL_TYPES = ["CS_VirtualTrafficGeneratorChassis", "CS_VirtualTraffic
 
 
 class Chassis(AbstractResource):
-    RESOURCE_MODEL = "Virtual Traffic Generator Chassis"
+    RESOURCE_MODEL = "VirtualTrafficGeneratorChassis"
     RELATIVE_PATH_TEMPLATE = "CH"
 
     def __init__(self, shell_name, name, unique_id, shell_type="CS_VirtualTrafficGeneratorChassis"):
@@ -26,7 +26,7 @@ class Chassis(AbstractResource):
 
 
 class Module(AbstractResource):
-    RESOURCE_MODEL = "Virtual Traffic Generator Module"
+    RESOURCE_MODEL = "VirtualTrafficGeneratorModule"
     RELATIVE_PATH_TEMPLATE = "M"
 
     @property
@@ -49,7 +49,7 @@ class Module(AbstractResource):
 
 
 class Port(AbstractResource):
-    RESOURCE_MODEL = "Virtual Traffic Generator Port"
+    RESOURCE_MODEL = "VirtualTrafficGeneratorPort"
     RELATIVE_PATH_TEMPLATE = "P"
 
     def __init__(self, shell_name, name, unique_id, shell_type="CS_VirtualTrafficGeneratorPort"):

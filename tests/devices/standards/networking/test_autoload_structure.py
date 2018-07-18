@@ -22,15 +22,20 @@ class TestGenericResource(unittest.TestCase):
                                         shell_type=self.shell_type)
 
     def test_generic_resource_no_shell_name(self):
+        shell_name = ""
         name = "test name"
         unique_id = "test unique id"
         shell_type = ""
-        resource = GenericResource(shell_name="",
-                                   name=name,
-                                   unique_id=unique_id,
-                                   shell_type=shell_type)
-        self.assertEqual(resource.shell_name, "")
-        self.assertEqual(resource.shell_type, "")
+
+        self.assertRaisesRegexp(
+            DeprecationWarning,
+            "1gen Shells doesn't supported",
+            GenericResource,
+            shell_name,
+            name,
+            unique_id,
+            shell_type,
+        )
 
     def test_contact_name_getter(self):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
