@@ -269,6 +269,10 @@ class GenericPort(AbstractResource):
     RELATIVE_PATH_TEMPLATE = "P"
     FAMILY_NAME = 'CS_Port'
 
+    def __init__(self, shell_name, name, unique_id):
+        super(GenericPort, self).__init__(shell_name, name, unique_id)
+        self._family_name = '{}.'.format(self.FAMILY_NAME)
+
     @property
     def mac_address(self):
         """
@@ -354,7 +358,7 @@ class GenericPort(AbstractResource):
         """
         :rtype: float
         """
-        return self.attributes.get("{}.Bandwidth".format(self.FAMILY_NAME), 0)
+        return self.attributes.get("{}Bandwidth".format(self._family_name), 0)
 
     @bandwidth.setter
     @attr_length_validator
@@ -363,7 +367,7 @@ class GenericPort(AbstractResource):
         The current interface bandwidth, in MB.
         :type value: float
         """
-        self.attributes["{}.Bandwidth".format(self.FAMILY_NAME)] = value or 0
+        self.attributes["{}Bandwidth".format(self._family_name)] = value or 0
 
     @property
     def mtu(self):
