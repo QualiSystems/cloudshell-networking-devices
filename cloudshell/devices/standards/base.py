@@ -63,3 +63,22 @@ class AbstractResource(object):
     def unique_identifier(self, value):
         """Set resource unique identifier"""
         self.unique_id = value
+
+
+class Attribute(object):
+    def __init__(self, prefix_attr, name, default=None):
+        self.prefix_attr = prefix_attr
+        self.name = name
+        self.default = default
+
+    def get_key(self, instance):
+        return '{}{}'.format(getattr(instance, self.prefix_attr), self.name)
+
+    def __get__(self, instance, owner):
+        if instance is None:
+            return self
+
+        return instance.attributes.get(self.get_key(instance), self.default)
+
+    def __set__(self, instance, value):
+        instance.attributes[self.get_key(instance)] = value
