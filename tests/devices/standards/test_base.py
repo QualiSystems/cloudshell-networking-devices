@@ -3,7 +3,8 @@ import unittest
 
 import mock
 
-from cloudshell.devices.standards.firewall.autoload_structure import AbstractResource
+from cloudshell.devices.standards.base import AbstractResource
+from cloudshell.devices.standards.validators import MAX_STR_ATTR_LENGTH
 
 
 class TestAbstractResource(unittest.TestCase):
@@ -48,28 +49,30 @@ class TestAbstractResource(unittest.TestCase):
         # verify
         self.assertEqual(result, self.resource.RESOURCE_MODEL)
 
-    def test_name_getter(self):
-        # act
-        result = self.resource.name
-        # verify
-        self.assertEqual(result, self.resource._name)
-
     def test_name_setter(self):
         expected_val = "test value"
         # act
         self.resource.name = expected_val
         # verify
-        self.assertEqual(self.resource._name, expected_val)
-
-    def test_unique_identifier_getter(self):
-        # act
-        result = self.resource.unique_identifier
-        # verify
-        self.assertEqual(result, self.resource.unique_id)
+        self.assertEqual(self.resource.name, expected_val)
 
     def test_unique_identifier_setter(self):
         expected_val = "test value"
         # act
         self.resource.unique_identifier = expected_val
         # verify
-        self.assertEqual(self.resource.unique_id, expected_val)
+        self.assertEqual(self.resource.unique_identifier, expected_val)
+
+    def test_name_setter_too_big(self):
+        value = "x" * (MAX_STR_ATTR_LENGTH + 1)
+
+        self.resource.name = value
+
+        self.assertEqual(self.resource.name, value[:MAX_STR_ATTR_LENGTH])
+
+    def test_unique_identifier_too_big(self):
+        value = "x" * (MAX_STR_ATTR_LENGTH + 1)
+
+        self.resource.unique_identifier = value
+
+        self.assertEqual(self.resource.unique_identifier, value[:MAX_STR_ATTR_LENGTH])

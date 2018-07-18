@@ -1,6 +1,5 @@
 import unittest
 
-from cloudshell.devices.standards.networking.autoload_structure import AVAILABLE_SHELL_TYPES
 from cloudshell.devices.standards.networking.autoload_structure import GenericResource
 from cloudshell.devices.standards.networking.autoload_structure import GenericChassis
 from cloudshell.devices.standards.networking.autoload_structure import GenericSubModule
@@ -15,22 +14,27 @@ class TestGenericResource(unittest.TestCase):
         self.shell_name = "test shell name"
         self.name = "test name"
         self.unique_id = "test unique id"
-        self.shell_type = AVAILABLE_SHELL_TYPES[-1]
+        self.shell_type = GenericResource.AVAILABLE_SHELL_TYPES[-1]
         self.resource = GenericResource(shell_name=self.shell_name,
                                         name=self.name,
                                         unique_id=self.unique_id,
                                         shell_type=self.shell_type)
 
     def test_generic_resource_no_shell_name(self):
+        shell_name = ""
         name = "test name"
         unique_id = "test unique id"
         shell_type = ""
-        resource = GenericResource(shell_name="",
-                                   name=name,
-                                   unique_id=unique_id,
-                                   shell_type=shell_type)
-        self.assertEqual(resource.shell_name, "")
-        self.assertEqual(resource.shell_type, "")
+
+        self.assertRaisesRegexp(
+            DeprecationWarning,
+            "1gen Shells doesn't supported",
+            GenericResource,
+            shell_name,
+            name,
+            unique_id,
+            shell_type,
+        )
 
     def test_contact_name_getter(self):
         """Check that property will return needed attribute value from the internal attributes dictionary"""

@@ -1,6 +1,5 @@
 import unittest
 
-from cloudshell.devices.standards.firewall.autoload_structure import AVAILABLE_SHELL_TYPES
 from cloudshell.devices.standards.firewall.autoload_structure import GenericResource
 from cloudshell.devices.standards.firewall.autoload_structure import GenericChassis
 from cloudshell.devices.standards.firewall.autoload_structure import GenericSubModule
@@ -15,7 +14,7 @@ class TestGenericResource(unittest.TestCase):
         self.shell_name = "test shell name"
         self.name = "test name"
         self.unique_id = "test unique id"
-        self.shell_type = AVAILABLE_SHELL_TYPES[-1]
+        self.shell_type = GenericResource.AVAILABLE_SHELL_TYPES[-1]
         self.resource = GenericResource(shell_name=self.shell_name,
                                         name=self.name,
                                         unique_id=self.unique_id,
