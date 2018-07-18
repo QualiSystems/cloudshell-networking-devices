@@ -2,7 +2,6 @@ import unittest
 
 import mock
 
-from cloudshell.devices.standards.sdn.autoload_structure import AVAILABLE_SHELL_TYPES
 from cloudshell.devices.standards.sdn.autoload_structure import SDNControllerResource
 from cloudshell.devices.standards.sdn.autoload_structure import GenericSDNSwitch
 from cloudshell.devices.standards.sdn.autoload_structure import GenericSDNPort
@@ -13,22 +12,27 @@ class TestSDNControllerResource(unittest.TestCase):
         self.shell_name = "test shell name"
         self.name = "test name"
         self.unique_id = "test unique id"
-        self.shell_type = AVAILABLE_SHELL_TYPES[-1]
+        self.shell_type = SDNControllerResource.AVAILABLE_SHELL_TYPES[-1]
         self.resource = SDNControllerResource(shell_name=self.shell_name,
                                               name=self.name,
                                               unique_id=self.unique_id,
                                               shell_type=self.shell_type)
 
     def test_generic_resource_no_shell_name(self):
+        shell_name = ""
         name = "test name"
         unique_id = "test unique id"
         shell_type = ""
-        resource = SDNControllerResource(shell_name="",
-                                         name=name,
-                                         unique_id=unique_id,
-                                         shell_type=shell_type)
-        self.assertEqual(resource.shell_name, "")
-        self.assertEqual(resource.shell_type, "")
+
+        self.assertRaisesRegexp(
+            DeprecationWarning,
+            "1gen Shells doesn\'t supported",
+            SDNControllerResource,
+            shell_name,
+            name,
+            unique_id,
+            shell_type,
+        )
 
     def test_model_name_setter(self):
         """Check that property setter will correctly add attribute value into the internal attributes dictionary"""

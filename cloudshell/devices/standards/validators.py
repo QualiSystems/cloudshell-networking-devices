@@ -24,3 +24,18 @@ def attr_length_validator(func):
 
         return func(*nargs, **kwargs)
     return inner
+
+
+class ValidatedAttribute(object):
+    def __init__(self):
+        self.value = None
+
+    def __get__(self, instance, owner):
+        if instance is None:
+            return self
+
+        return self.value
+
+    @attr_length_validator
+    def __set__(self, instance, value):
+        self.value = value
