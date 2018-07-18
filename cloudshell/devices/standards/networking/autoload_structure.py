@@ -20,17 +20,15 @@ class GenericResource(AbstractResource):
     def __init__(self, shell_name, name, unique_id, shell_type="CS_Switch"):
         super(GenericResource, self).__init__(shell_name, name, unique_id)
 
-        if shell_name:
-            self.shell_name = "{}.".format(shell_name)
-            if shell_type in AVAILABLE_SHELL_TYPES:
-                self.shell_type = "{}.".format(shell_type)
-            else:
-                raise Exception(self.__class__.__name__, "Unavailable shell type {shell_type}."
-                                                         "Shell type should be one of: {avail}"
-                                .format(shell_type=shell_type, avail=", ".join(AVAILABLE_SHELL_TYPES)))
-        else:
-            self.shell_name = ""
-            self.shell_type = ""
+        if shell_type not in AVAILABLE_SHELL_TYPES:
+            raise Exception(
+                self.__class__.__name__,
+                "Unavailable shell type {shell_type}.Shell type should be one of: {avail}".format(
+                    shell_type=shell_type, avail=", ".join(AVAILABLE_SHELL_TYPES)),
+            )
+
+        self.shell_name = "{}.".format(shell_name)
+        self.shell_type = "{}.".format(shell_type)
 
     @property
     def contact_name(self):
@@ -271,7 +269,7 @@ class GenericPort(AbstractResource):
 
     def __init__(self, shell_name, name, unique_id):
         super(GenericPort, self).__init__(shell_name, name, unique_id)
-        self._family_name = '{}.'.format(self.FAMILY_NAME)
+        self.family_name = '{}.'.format(self.FAMILY_NAME)
 
     @property
     def mac_address(self):
@@ -358,7 +356,7 @@ class GenericPort(AbstractResource):
         """
         :rtype: float
         """
-        return self.attributes.get("{}Bandwidth".format(self._family_name), 0)
+        return self.attributes.get("{}Bandwidth".format(self.family_name), 0)
 
     @bandwidth.setter
     @attr_length_validator
@@ -367,7 +365,7 @@ class GenericPort(AbstractResource):
         The current interface bandwidth, in MB.
         :type value: float
         """
-        self.attributes["{}Bandwidth".format(self._family_name)] = value or 0
+        self.attributes["{}Bandwidth".format(self.family_name)] = value or 0
 
     @property
     def mtu(self):
