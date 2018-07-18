@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from cloudshell.devices.standards.base import AbstractResource
+from cloudshell.devices.standards.base import AbstractResource, Attribute
 from cloudshell.devices.standards.validators import attr_length_validator
 
 AVAILABLE_SHELL_TYPES = ["CS_Switch",
@@ -17,6 +17,14 @@ class GenericResource(AbstractResource):
     RESOURCE_MODEL = "Generic Resource"
     RELATIVE_PATH_TEMPLATE = ""
 
+    contact_name = Attribute('shell_type', 'Contact Name')
+    os_version = Attribute('shell_type', 'OS Version')
+    system_name = Attribute('shell_type', 'System Name')
+    vendor = Attribute('shell_type', 'Vendor')
+    location = Attribute('shell_type', 'Location')
+    model = Attribute('shell_type', 'Model')
+    model_name = Attribute('shell_type', 'Model Name')
+
     def __init__(self, shell_name, name, unique_id, shell_type="CS_Switch"):
         super(GenericResource, self).__init__(shell_name, name, unique_id)
 
@@ -31,97 +39,6 @@ class GenericResource(AbstractResource):
         else:
             self.shell_name = ""
             self.shell_type = ""
-
-    @property
-    def contact_name(self):
-        """ Return the name of a contact registered in the device """
-
-        return self.attributes.get("{}Contact Name".format(self.shell_type), None)
-
-    @contact_name.setter
-    @attr_length_validator
-    def contact_name(self, value):
-        """ Set the name of a contact registered in the device """
-
-        self.attributes["{}Contact Name".format(self.shell_type)] = value
-
-    @property
-    def os_version(self):
-        """ Return version of the Operating System """
-
-        return self.attributes.get("{}OS Version".format(self.shell_type), None)
-
-    @os_version.setter
-    @attr_length_validator
-    def os_version(self, value):
-        """ Set version of the Operating System """
-
-        self.attributes["{}OS Version".format(self.shell_type)] = value
-
-    @property
-    def system_name(self):
-        """ Set device system name """
-
-        return self.attributes.get("{}System Name".format(self.shell_type), None)
-
-    @system_name.setter
-    @attr_length_validator
-    def system_name(self, value):
-        """ Set device system name """
-
-        self.attributes["{}System Name".format(self.shell_type)] = value
-
-    @property
-    def vendor(self):
-        """ Return The name of the device manufacture """
-
-        return self.attributes.get("{}Vendor".format(self.shell_type), None)
-
-    @vendor.setter
-    @attr_length_validator
-    def vendor(self, value=""):
-        """ Set The name of the device manufacture """
-
-        self.attributes["{}Vendor".format(self.shell_type)] = value
-
-    @property
-    def location(self):
-        """ The device physical location identifier. For example Lab1/Floor2/Row5/Slot4 """
-
-        return self.attributes.get("{}Location".format(self.shell_type), None)
-
-    @location.setter
-    @attr_length_validator
-    def location(self, value=""):
-        """ Set The device physical location identifier """
-
-        self.attributes["{}Location".format(self.shell_type)] = value
-
-    @property
-    def model(self):
-        """ Return the device model. This information is typically used for abstract resource filtering """
-
-        return self.attributes.get("{}Model".format(self.shell_type), None)
-
-    @model.setter
-    @attr_length_validator
-    def model(self, value=""):
-        """ Set the device model. This information is typically used for abstract resource filtering """
-
-        self.attributes["{}Model".format(self.shell_type)] = value
-
-    @property
-    def model_name(self):
-        """ Return the device model name. This information is typically used for abstract resource filtering """
-
-        return self.attributes.get("{}Model Name".format(self.shell_type), None)
-
-    @model_name.setter
-    @attr_length_validator
-    def model_name(self, value=""):
-        """ Set the device model name. This information is typically used for abstract resource filtering """
-
-        self.attributes["{}Model Name".format(self.shell_type)] = value
 
 
 class GenericChassis(AbstractResource):
