@@ -114,3 +114,17 @@ class TestSnmpHandler(unittest.TestCase):
                                                            self.snmp.disable_flow,
                                                            self.snmp._snmp_parameters,
                                                            self.snmp._logger)
+
+    def test_create_enable_and_disable_flow_does_nothing(self):
+        class TestedClass(SnmpHandler):
+
+            def _create_enable_flow(self):
+                return super(TestedClass, self)._create_enable_flow()
+
+            def _create_disable_flow(self):
+                return super(TestedClass, self)._create_disable_flow()
+
+        tested_class = TestedClass(self.resource_conf, self.logger, self.api)
+
+        self.assertIsNone(tested_class._create_enable_flow())
+        self.assertIsNone(tested_class._create_disable_flow())

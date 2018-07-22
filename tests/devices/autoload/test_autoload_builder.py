@@ -37,6 +37,23 @@ class TestAutoloadDetailsBuilder(unittest.TestCase):
             'resource_prefix4': 'resource_4'
         })
 
+    def test_validate_build_resource_structure_2(self):
+        autoload_resource = {
+            "resource_prefix":
+                {
+                    "1": ["resource_1", "resource_2"],
+                    -1: ["resource_3"]
+                }
+        }
+        # act
+        result = AutoloadDetailsBuilder._validate_build_resource_structure(autoload_resource=autoload_resource)
+        # verify
+        self.assertEqual(result, {
+            'resource_prefix1': 'resource_1',
+            'resource_prefix2': 'resource_2',
+            'resource_prefix3': 'resource_3',
+        })
+
     @mock.patch("cloudshell.devices.autoload.autoload_builder.AutoLoadResource")
     @mock.patch("cloudshell.devices.autoload.autoload_builder.AutoLoadAttribute")
     def test_build_autoload_details(self, autoload_attribute_class, autoload_resource_class):
