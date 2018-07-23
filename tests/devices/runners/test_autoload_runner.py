@@ -55,6 +55,6 @@ class TestAutoloadRunner(unittest.TestCase):
             def autoload_flow(self):
                 return super(TestedClass, self).autoload_flow
 
-        tested_class = TestedClass(self.resource_conf)
+        tested_class = TestedClass(self.resource_conf, self.logger)
 
         self.assertIsNone(tested_class.autoload_flow)
