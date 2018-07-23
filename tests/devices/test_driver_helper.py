@@ -1,6 +1,7 @@
 import unittest
 
 import mock
+from cloudshell.snmp.snmp_parameters import SNMPV2WriteParameters, SNMPV2ReadParameters
 
 from cloudshell.devices import driver_helper
 
@@ -96,6 +97,22 @@ class TestDriverHelper(unittest.TestCase):
         snmpv2parameters_class.assert_called_once_with(ip=config.address,
                                                        snmp_write_community=decrypted_snmp_string.Value)
 
+    def test_get_snmp_parameters_from_command_context_for_snmp_v2_write_community_1gen(self):
+        resource_config = mock.MagicMock(
+            snmp_version='v2',
+            shell_name='',
+            snmp_write_community='private',
+            address='127.0.0.1',
+        )
+        api = mock.MagicMock()
+
+        snmp_params = driver_helper.get_snmp_parameters_from_command_context(resource_config, api)
+
+        self.assertIsInstance(snmp_params, SNMPV2WriteParameters)
+        self.assertEqual(snmp_params.ip, resource_config.address)
+        self.assertEqual(snmp_params.port, 161)
+        self.assertEqual(snmp_params.snmp_community, resource_config.snmp_write_community)
+
     @mock.patch("cloudshell.devices.driver_helper.SNMPV2ReadParameters")
     def test_get_snmp_parameters_from_command_context_for_snmp_v2_read_community(self, snmpv2parameters_class):
         """Check that method will return SNMPV2ReadParameters instance for snmp_version=v2 in config"""
@@ -117,6 +134,23 @@ class TestDriverHelper(unittest.TestCase):
 
         api.DecryptPassword.assert_called_with(config.snmp_read_community)
         self.assertTrue(api.DecryptPassword.call_count == 2)
+
+    def test_get_snmp_parameters_from_command_context_for_snmp_v2_read_community_1gen(self):
+        resource_config = mock.MagicMock(
+            snmp_version='v2',
+            shell_name='',
+            snmp_write_community='',
+            snmp_read_community='public',
+            address='127.0.0.1',
+        )
+        api = mock.MagicMock()
+
+        snmp_params = driver_helper.get_snmp_parameters_from_command_context(resource_config, api)
+
+        self.assertIsInstance(snmp_params, SNMPV2ReadParameters)
+        self.assertEqual(snmp_params.ip, resource_config.address)
+        self.assertEqual(snmp_params.port, 161)
+        self.assertEqual(snmp_params.snmp_community, resource_config.snmp_read_community)
 
     def test_parse_custom_commands(self):
         """Check that method will parse string into list"""

@@ -293,3 +293,26 @@ class TestGenericNetworkingResource(unittest.TestCase):
         # verify
         self.assertEqual(result, expected_val)
 
+    def test_no_shell_name(self):
+        shell_name = ''
+
+        resource = GenericNetworkingResource(shell_name, self.name, self.supported_os)
+
+        self.assertEqual('', resource.namespace_prefix)
+
+    def test_snmp_v3_auth_protocol(self):
+        expected_val = 'test value'
+        self.resource.attributes = {
+            '{}{}'.format(self.resource.namespace_prefix, 'SNMP V3 Authentication Protocol'):
+                expected_val,
+        }
+
+        self.assertEqual(expected_val, self.resource.snmp_v3_auth_protocol)
+
+    def test_snmp_v3_priv_protocol(self):
+        expected_val = 'test value'
+        self.resource.attributes = {
+            '{}{}'.format(self.resource.namespace_prefix, 'SNMP V3 Privacy Protocol'): expected_val,
+        }
+
+        self.assertEqual(expected_val, self.resource.snmp_v3_priv_protocol)

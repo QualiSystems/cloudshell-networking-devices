@@ -1,7 +1,6 @@
 import unittest
 
 import mock
-from cloudshell.core.logger import qs_logger
 
 from cloudshell.devices.runners.firmware_runner import FirmwareRunner
 
@@ -51,3 +50,16 @@ class TestFirmwareRunner(unittest.TestCase):
         # act
         with self.assertRaisesRegexp(Exception, "Path is wrong or empty"):
             self.runner.load_firmware(path=path, vrf_management_name=vrf_mmgmt_name)
+
+    def test_prop_cli_handler(self):
+        self.assertEqual(self.cli_handler, self.runner.cli_handler)
+
+    def test_load_firmware_flow_does_nothing(self):
+        class TestedClass(FirmwareRunner):
+            @property
+            def load_firmware_flow(self):
+                return super(TestedClass, self).load_firmware_flow
+
+        tested_class = TestedClass(self.logger, self.cli_handler)
+
+        self.assertIsNone(tested_class.load_firmware_flow)
