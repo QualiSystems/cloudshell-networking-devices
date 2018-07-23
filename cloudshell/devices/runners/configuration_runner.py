@@ -10,7 +10,7 @@ from abc import abstractproperty
 from posixpath import join
 
 from cloudshell.devices.json_request_helper import JsonRequestDeserializer
-from cloudshell.devices.networking_utils import UrlParser, serialize_to_json
+from cloudshell.devices.networking_utils import UrlParser, serialize_to_json, logging_commands
 from cloudshell.devices.runners.interfaces.configuration_runner_interface import ConfigurationOperationsInterface
 from cloudshell.shell.core.interfaces.save_restore import OrchestrationSaveResult, OrchestrationSavedArtifactInfo, \
     OrchestrationSavedArtifact, OrchestrationRestoreRules
@@ -66,6 +66,7 @@ class ConfigurationRunner(ConfigurationOperationsInterface):
 
         pass
 
+    @logging_commands
     def save(self, folder_path='', configuration_type='running', vrf_management_name=None, return_artifact=False):
         """Backup 'startup-config' or 'running-config' from device to provided file_system [ftp|tftp]
         Also possible to backup config to localhost
@@ -75,8 +76,6 @@ class ConfigurationRunner(ConfigurationOperationsInterface):
         :return: status message / exception
         :rtype: OrchestrationSavedArtifact or str
         """
-
-        self._logger.info('Start command "save"')
 
         if hasattr(self.resource_config, "vrf_management_name"):
             vrf_management_name = vrf_management_name or self.resource_config.vrf_management_name
@@ -97,9 +96,9 @@ class ConfigurationRunner(ConfigurationOperationsInterface):
             identifier = full_path.replace("{0}:".format(artifact_type), "")
             return OrchestrationSavedArtifact(identifier=identifier, artifact_type=artifact_type)
 
-        self._logger.info('Command "save" completed')
         return destination_filename
 
+    @logging_commands
     def restore(self, path, configuration_type="running", restore_method="override", vrf_management_name=None):
         """Restore configuration on device from provided configuration file
         Restore configuration from local file system or ftp/tftp server into 'running-config' or 'startup-config'.
@@ -109,8 +108,6 @@ class ConfigurationRunner(ConfigurationOperationsInterface):
         :param vrf_management_name: Virtual Routing and Forwarding management name
         :return: exception on crash
         """
-
-        self._logger.info('Start command "restore"')
 
         if hasattr(self.resource_config, "vrf_management_name"):
             vrf_management_name = vrf_management_name or self.resource_config.vrf_management_name
@@ -122,8 +119,7 @@ class ConfigurationRunner(ConfigurationOperationsInterface):
                                        restore_method=restore_method.lower(),
                                        vrf_management_name=vrf_management_name)
 
-        self._logger.info('Command "restore" completed')
-
+    @logging_commands
     def orchestration_save(self, mode="shallow", custom_params=None):
         """Orchestration Save command
 
@@ -132,8 +128,6 @@ class ConfigurationRunner(ConfigurationOperationsInterface):
         :return Serialized OrchestrationSavedArtifact to json
         :rtype json
         """
-
-        self._logger.info('Start command "orchestration_save"')
 
         save_params = {'folder_path': '', 'configuration_type': 'running', 'return_artifact': True}
         params = dict()
@@ -152,19 +146,15 @@ class ConfigurationRunner(ConfigurationOperationsInterface):
         save_response = OrchestrationSaveResult(saved_artifacts_info=saved_artifact_info)
         self._validate_artifact_info(saved_artifact_info)
 
-        response = serialize_to_json(save_response)
+        return serialize_to_json(save_response)
 
-        self._logger.info('Command "orchestration_save" completed')
-        return response
-
+    @logging_commands
     def orchestration_restore(self, saved_artifact_info, custom_params=None):
         """Orchestration restore
 
         :param saved_artifact_info: json with all required data to restore configuration on the device
         :param custom_params: custom parameters
         """
-
-        self._logger.info('Start command "orchestration_restore"')
 
         if saved_artifact_info is None or saved_artifact_info == '':
             raise Exception('ConfigurationOperations', 'saved_artifact_info is None or empty')
@@ -204,7 +194,6 @@ class ConfigurationRunner(ConfigurationOperationsInterface):
             restore_params['configuration_type'] = 'startup'
 
         self.restore(**restore_params)
-        self._logger.info('Command "orchestration_restore" completed')
 
     def get_path(self, path=''):
         """

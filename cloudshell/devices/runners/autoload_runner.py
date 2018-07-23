@@ -3,6 +3,7 @@
 
 from abc import abstractproperty, ABCMeta
 
+from cloudshell.devices.networking_utils import logging_commands
 from cloudshell.devices.runners.interfaces.autoload_runner_interface import AutoloadOperationsInterface
 
 
@@ -45,6 +46,7 @@ class AutoloadRunner(AutoloadOperationsInterface):
             attrs.get('Vendor', ''), attrs.get('Model', ''), attrs.get('OS Version', ''),
         ))
 
+    @logging_commands
     def discover(self):
         """Enable and Disable SNMP communityon the device, Read it's structure and attributes: chassis, modules,
         submodules, ports, port-channels and power supplies
@@ -53,13 +55,10 @@ class AutoloadRunner(AutoloadOperationsInterface):
         :rtype: cloudshell.shell.core.driver_context.AutoLoadDetails
         """
 
-        self._logger.info('Start command "Autoload"')
-
         details = self.autoload_flow.execute_flow(self.resource_config.supported_os,
                                                   self.resource_config.shell_name,
                                                   self.resource_config.family,
                                                   self.resource_config.name)
 
         self._log_device_details(details)
-        self._logger.info('Command "Autoload" completed')
         return details

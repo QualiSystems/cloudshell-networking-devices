@@ -14,7 +14,8 @@ from cloudshell.core.driver_response_root import DriverResponseRoot
 from cloudshell.networking.apply_connectivity.models.connectivity_result import ConnectivityErrorResponse, \
     ConnectivitySuccessResponse
 from cloudshell.devices.json_request_helper import JsonRequestDeserializer
-from cloudshell.devices.networking_utils import serialize_to_json, validate_vlan_range, validate_vlan_number
+from cloudshell.devices.networking_utils import serialize_to_json, validate_vlan_range, \
+    validate_vlan_number, logging_commands
 from cloudshell.devices.runners.interfaces.connectivity_runner_interface import ConnectivityOperationsInterface
 
 
@@ -53,6 +54,7 @@ class ConnectivityRunner(ConnectivityOperationsInterface):
 
         pass
 
+    @logging_commands
     def apply_connectivity_changes(self, request):
         """ Handle apply connectivity changes request json, trigger add or remove vlan methods,
         get responce from them and create json response
@@ -61,8 +63,6 @@ class ConnectivityRunner(ConnectivityOperationsInterface):
         :return Serialized DriverResponseRoot to json
         :rtype json
         """
-
-        self._logger.info('Start command "ApplyConnectivityChanges"')
 
         if request is None or request == "":
             raise Exception(self.__class__.__name__, "request is None or empty")
@@ -142,10 +142,7 @@ class ConnectivityRunner(ConnectivityOperationsInterface):
 
         driver_response.actionResults = request_result
         driver_response_root.driverResponse = driver_response
-        response = serialize_to_json(driver_response_root)  # .replace("[true]", "true")
-
-        self._logger.info('Command "ApplyConnectivityChanges" finished')
-        return response
+        return serialize_to_json(driver_response_root)  # .replace("[true]", "true")
 
     def _validate_request_action(self, action):
         """ Validate action from the request json,

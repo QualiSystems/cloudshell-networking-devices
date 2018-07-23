@@ -3,7 +3,7 @@
 
 from abc import abstractproperty
 
-from cloudshell.devices.networking_utils import UrlParser
+from cloudshell.devices.networking_utils import UrlParser, logging_commands
 from cloudshell.devices.runners.interfaces.firmware_runner_interface import FirmwareRunnerInterface
 
 
@@ -33,6 +33,7 @@ class FirmwareRunner(FirmwareRunnerInterface):
 
         pass
 
+    @logging_commands
     def load_firmware(self, path, vrf_management_name=None):
         """Update firmware version on device by loading provided image, performs following steps:
 
@@ -46,8 +47,6 @@ class FirmwareRunner(FirmwareRunnerInterface):
         :return: status / exception
         """
 
-        self._logger.info('Start command "load_firmware"')
-
         url = UrlParser.parse_url(path)
         required_keys = [UrlParser.FILENAME, UrlParser.HOSTNAME, UrlParser.SCHEME]
 
@@ -55,5 +54,3 @@ class FirmwareRunner(FirmwareRunnerInterface):
             raise Exception(self.__class__.__name__, "Path is wrong or empty")
 
         self.load_firmware_flow.execute_flow(path, vrf_management_name, self._timeout)
-
-        self._logger.info('Command "load_firmware" completed')

@@ -1,9 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from abc import abstractproperty
-
 from cloudshell.devices.flows.cli_action_flows import RunCommandFlow
+from cloudshell.devices.networking_utils import logging_commands
 from cloudshell.devices.runners.interfaces.state_runner_interface import StateOperationsInterface
 
 
@@ -23,10 +22,10 @@ class StateRunner(StateOperationsInterface):
 
         return self._cli_handler
 
+    @logging_commands
     def health_check(self):
         """ Verify that device is accessible over CLI by sending ENTER for cli session """
 
-        self._logger.info('Start command "health_check" on {} resource'.format(self._resource_name))
         api_response = 'Online'
 
         result = 'Health check on resource {}'.format(self._resource_name)
@@ -44,7 +43,6 @@ class StateRunner(StateOperationsInterface):
         except Exception:
             self._logger.error('Cannot update {} resource status on portal'.format(self._resource_name))
 
-        self._logger.info('Command "health_check" completed on {} resource'.format(self._resource_name))
         return result
 
     def shutdown(self):

@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from cloudshell.devices.flows.cli_action_flows import RunCommandFlow
+from cloudshell.devices.networking_utils import logging_commands
 from cloudshell.devices.runners.interfaces.run_command_runner_interface import RunCommandInterface
 
 
@@ -26,6 +27,7 @@ class RunCommandRunner(RunCommandInterface):
     def run_command_flow(self):
         return RunCommandFlow(self.cli_handler, self._logger)
 
+    @logging_commands
     def run_custom_command(self, custom_command):
         """ Execute custom command on device
 
@@ -33,11 +35,9 @@ class RunCommandRunner(RunCommandInterface):
         :return: result of command execution
         """
 
-        self._logger.info('Start command "run_custom_command"')
-        response = self.run_command_flow.execute_flow(custom_command=custom_command)
-        self._logger.info('Command "run_custom_command" completed')
-        return response
+        return self.run_command_flow.execute_flow(custom_command=custom_command)
 
+    @logging_commands
     def run_custom_config_command(self, custom_command):
         """ Execute custom command in configuration mode on device
 
@@ -45,7 +45,4 @@ class RunCommandRunner(RunCommandInterface):
         :return: result of command execution
         """
 
-        self._logger.info('Start command "run_custom_config_command"')
-        response = self.run_command_flow.execute_flow(custom_command=custom_command, is_config=True)
-        self._logger.info('Command "run_custom_config_command" completed')
-        return response
+        return self.run_command_flow.execute_flow(custom_command=custom_command, is_config=True)
