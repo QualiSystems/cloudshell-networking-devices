@@ -51,6 +51,19 @@ class TestSDNControllerResource(unittest.TestCase):
         # verify
         self.assertEqual(result, expected_val)
 
+    def test_raise_exception_if_unavailable_shell_type(self):
+        shell_type = 'unavailable_shell_type'
+
+        self.assertRaisesRegexp(
+            Exception,
+            'Unavailable shell type',
+            SDNControllerResource,
+            self.shell_name,
+            self.name,
+            self.unique_id,
+            shell_type,
+        )
+
 
 class TestGenericSDNSwitch(unittest.TestCase):
     def setUp(self):

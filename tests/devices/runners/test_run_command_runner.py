@@ -50,3 +50,6 @@ class TestRunCommandRunner(unittest.TestCase):
             run_command_flow_class.assert_called_once_with(cli_handler, self.logger)
             run_command_flow.execute_flow.assert_called_once_with(custom_command=custom_command,
                                                                   is_config=True)
+
+    def test_prop_cli_handler(self):
+        self.assertEqual(self.cli_handler, self.runner.cli_handler)

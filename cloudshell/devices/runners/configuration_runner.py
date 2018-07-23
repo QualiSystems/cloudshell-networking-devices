@@ -251,7 +251,7 @@ class ConfigurationRunner(ConfigurationOperationsInterface):
                 if not hasattr(saved_config, class_attribute[0]):
                     is_fail = True
                     fail_attribute = class_attribute[0]
-                if not hasattr(getattr(saved_config, class_attribute[0]), class_attribute[1]):
+                elif not hasattr(getattr(saved_config, class_attribute[0]), class_attribute[1]):
                     is_fail = True
                     fail_attribute = class_attribute[1]
             else:

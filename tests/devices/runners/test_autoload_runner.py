@@ -48,3 +48,13 @@ class TestAutoloadRunner(unittest.TestCase):
                                                                self.resource_conf.shell_name,
                                                                self.resource_conf.family,
                                                                self.resource_conf.name)
+
+    def test_autload_flow_does_nothing(self):
+        class TestedClass(AutoloadRunner):
+            @property
+            def autoload_flow(self):
+                return super(TestedClass, self).autoload_flow
+
+        tested_class = TestedClass(self.resource_conf)
+
+        self.assertIsNone(tested_class.autoload_flow)
