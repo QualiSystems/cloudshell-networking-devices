@@ -3,7 +3,7 @@
 
 from abc import abstractproperty, ABCMeta
 
-from cloudshell.devices.networking_utils import logging_commands
+from cloudshell.devices.networking_utils import command_logging
 from cloudshell.devices.runners.interfaces.autoload_runner_interface import AutoloadOperationsInterface
 
 
@@ -46,7 +46,7 @@ class AutoloadRunner(AutoloadOperationsInterface):
             attrs.get('Vendor', ''), attrs.get('Model', ''), attrs.get('OS Version', ''),
         ))
 
-    @logging_commands
+    @command_logging
     def discover(self):
         """Enable and Disable SNMP communityon the device, Read it's structure and attributes: chassis, modules,
         submodules, ports, port-channels and power supplies

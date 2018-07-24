@@ -108,7 +108,7 @@ class UrlParser(object):
         return result.geturl()
 
 
-def logging_commands(func):
+def command_logging(func):
     @wraps(func)
     def wrapped(self, *args, **kwargs):
         func_name = func.__name__

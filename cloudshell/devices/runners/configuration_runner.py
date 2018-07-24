@@ -10,7 +10,7 @@ from abc import abstractproperty
 from posixpath import join
 
 from cloudshell.devices.json_request_helper import JsonRequestDeserializer
-from cloudshell.devices.networking_utils import UrlParser, serialize_to_json, logging_commands
+from cloudshell.devices.networking_utils import UrlParser, serialize_to_json, command_logging
 from cloudshell.devices.runners.interfaces.configuration_runner_interface import ConfigurationOperationsInterface
 from cloudshell.shell.core.interfaces.save_restore import OrchestrationSaveResult, OrchestrationSavedArtifactInfo, \
     OrchestrationSavedArtifact, OrchestrationRestoreRules
@@ -66,7 +66,7 @@ class ConfigurationRunner(ConfigurationOperationsInterface):
 
         pass
 
-    @logging_commands
+    @command_logging
     def save(self, folder_path='', configuration_type='running', vrf_management_name=None, return_artifact=False):
         """Backup 'startup-config' or 'running-config' from device to provided file_system [ftp|tftp]
         Also possible to backup config to localhost
@@ -98,7 +98,7 @@ class ConfigurationRunner(ConfigurationOperationsInterface):
 
         return destination_filename
 
-    @logging_commands
+    @command_logging
     def restore(self, path, configuration_type="running", restore_method="override", vrf_management_name=None):
         """Restore configuration on device from provided configuration file
         Restore configuration from local file system or ftp/tftp server into 'running-config' or 'startup-config'.
@@ -119,7 +119,7 @@ class ConfigurationRunner(ConfigurationOperationsInterface):
                                        restore_method=restore_method.lower(),
                                        vrf_management_name=vrf_management_name)
 
-    @logging_commands
+    @command_logging
     def orchestration_save(self, mode="shallow", custom_params=None):
         """Orchestration Save command
 
@@ -148,7 +148,7 @@ class ConfigurationRunner(ConfigurationOperationsInterface):
 
         return serialize_to_json(save_response)
 
-    @logging_commands
+    @command_logging
     def orchestration_restore(self, saved_artifact_info, custom_params=None):
         """Orchestration restore
 

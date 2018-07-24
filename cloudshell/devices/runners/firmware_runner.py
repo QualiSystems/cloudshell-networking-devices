@@ -3,7 +3,7 @@
 
 from abc import abstractproperty
 
-from cloudshell.devices.networking_utils import UrlParser, logging_commands
+from cloudshell.devices.networking_utils import UrlParser, command_logging
 from cloudshell.devices.runners.interfaces.firmware_runner_interface import FirmwareRunnerInterface
 
 
@@ -33,7 +33,7 @@ class FirmwareRunner(FirmwareRunnerInterface):
 
         pass
 
-    @logging_commands
+    @command_logging
     def load_firmware(self, path, vrf_management_name=None):
         """Update firmware version on device by loading provided image, performs following steps:
 

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from cloudshell.devices.flows.cli_action_flows import RunCommandFlow
-from cloudshell.devices.networking_utils import logging_commands
+from cloudshell.devices.networking_utils import command_logging
 from cloudshell.devices.runners.interfaces.state_runner_interface import StateOperationsInterface
 
 
@@ -22,7 +22,7 @@ class StateRunner(StateOperationsInterface):
 
         return self._cli_handler
 
-    @logging_commands
+    @command_logging
     def health_check(self):
         """ Verify that device is accessible over CLI by sending ENTER for cli session """
 

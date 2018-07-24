@@ -15,7 +15,7 @@ from cloudshell.networking.apply_connectivity.models.connectivity_result import 
     ConnectivitySuccessResponse
 from cloudshell.devices.json_request_helper import JsonRequestDeserializer
 from cloudshell.devices.networking_utils import serialize_to_json, validate_vlan_range, \
-    validate_vlan_number, logging_commands
+    validate_vlan_number, command_logging
 from cloudshell.devices.runners.interfaces.connectivity_runner_interface import ConnectivityOperationsInterface
 
 
@@ -54,7 +54,7 @@ class ConnectivityRunner(ConnectivityOperationsInterface):
 
         pass
 
-    @logging_commands
+    @command_logging
     def apply_connectivity_changes(self, request):
         """ Handle apply connectivity changes request json, trigger add or remove vlan methods,
         get responce from them and create json response
