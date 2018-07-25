@@ -10,7 +10,7 @@ from abc import abstractproperty
 from posixpath import join
 
 from cloudshell.devices.json_request_helper import JsonRequestDeserializer
-from cloudshell.devices.networking_utils import UrlParser, serialize_to_json
+from cloudshell.devices.networking_utils import UrlParser, serialize_to_json, command_logging
 from cloudshell.devices.runners.interfaces.configuration_runner_interface import ConfigurationOperationsInterface
 from cloudshell.shell.core.interfaces.save_restore import OrchestrationSaveResult, OrchestrationSavedArtifactInfo, \
     OrchestrationSavedArtifact, OrchestrationRestoreRules
@@ -66,6 +66,7 @@ class ConfigurationRunner(ConfigurationOperationsInterface):
 
         pass
 
+    @command_logging
     def save(self, folder_path='', configuration_type='running', vrf_management_name=None, return_artifact=False):
         """Backup 'startup-config' or 'running-config' from device to provided file_system [ftp|tftp]
         Also possible to backup config to localhost
@@ -94,8 +95,10 @@ class ConfigurationRunner(ConfigurationOperationsInterface):
             artifact_type = full_path.split(':')[0]
             identifier = full_path.replace("{0}:".format(artifact_type), "")
             return OrchestrationSavedArtifact(identifier=identifier, artifact_type=artifact_type)
+
         return destination_filename
 
+    @command_logging
     def restore(self, path, configuration_type="running", restore_method="override", vrf_management_name=None):
         """Restore configuration on device from provided configuration file
         Restore configuration from local file system or ftp/tftp server into 'running-config' or 'startup-config'.
@@ -116,6 +119,7 @@ class ConfigurationRunner(ConfigurationOperationsInterface):
                                        restore_method=restore_method.lower(),
                                        vrf_management_name=vrf_management_name)
 
+    @command_logging
     def orchestration_save(self, mode="shallow", custom_params=None):
         """Orchestration Save command
 
@@ -132,7 +136,6 @@ class ConfigurationRunner(ConfigurationOperationsInterface):
 
         save_params.update(params.get('custom_params', {}))
         save_params['folder_path'] = self.get_path(save_params['folder_path'])
-        self._logger.info('Start saving configuration')
 
         saved_artifact = self.save(**save_params)
 
@@ -145,6 +148,7 @@ class ConfigurationRunner(ConfigurationOperationsInterface):
 
         return serialize_to_json(save_response)
 
+    @command_logging
     def orchestration_restore(self, saved_artifact_info, custom_params=None):
         """Orchestration restore
 
