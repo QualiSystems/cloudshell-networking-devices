@@ -3,7 +3,7 @@ import unittest
 
 import mock
 
-from cloudshell.devices.standards.base import AbstractResource
+from cloudshell.devices.standards.base import AbstractResource, ResourceAttribute
 from cloudshell.devices.standards.validators import MAX_STR_ATTR_LENGTH
 
 
@@ -76,3 +76,35 @@ class TestAbstractResource(unittest.TestCase):
         self.resource.unique_identifier = value
 
         self.assertEqual(self.resource.unique_identifier, value[:MAX_STR_ATTR_LENGTH])
+
+
+class TestResourceAttribute(unittest.TestCase):
+    def setUp(self):
+        class TestedClass(object):
+            attr_name = 'Test Attr Name'
+            test_prefix = 'test val.'
+            attribute = ResourceAttribute('test_prefix', attr_name)
+
+            def __init__(self, attributes=None):
+                self.attributes = attributes or {}
+
+        self.tested_class = TestedClass
+
+    def test_get_descriptor_from_class(self):
+        descriptor = self.tested_class.attribute
+        self.assertIsInstance(descriptor, ResourceAttribute)
+
+    def test_get_val(self):
+        expected_val = 'expected'
+        key = '{}{}'.format(self.tested_class.test_prefix, self.tested_class.attr_name)
+        tested_instance = self.tested_class({key: expected_val})
+
+        self.assertEqual(tested_instance.attribute, expected_val)
+
+    def test_set_val(self):
+        expected_val = 'expected'
+        tested_instance = self.tested_class()
+        tested_instance.attribute = expected_val
+
+        key = '{}{}'.format(self.tested_class.test_prefix, self.tested_class.attr_name)
+        self.assertEqual(tested_instance.attributes[key], expected_val)

@@ -1,12 +1,11 @@
 import unittest
 
-from cloudshell.devices.standards.traffic.virtual.autoload_structure import AVAILABLE_SHELL_TYPES, \
-    Chassis, Module, Port
+from cloudshell.devices.standards.traffic.virtual.autoload_structure import Chassis, Module, Port
 
 
 class TestChassis(unittest.TestCase):
     def test_creating(self):
-        shell_type = AVAILABLE_SHELL_TYPES[-1]
+        shell_type = Chassis.AVAILABLE_SHELL_TYPES[-1]
         self.resource = Chassis('test shell name', 'test name', 'test uniq id', shell_type)
 
     def test_raise_exception_if_unavailable_shell_type(self):
@@ -23,12 +22,22 @@ class TestChassis(unittest.TestCase):
         )
 
     def test_no_shell_name(self):
-        resource = Chassis('', 'name', 'uniq_id')
+        shell_name = ''
+        name = 'test name'
+        unique_id = 'uniq id'
+        shell_type = 'test shell type'
 
-        self.assertEqual(resource.shell_name, '')
-        self.assertEqual(resource.shell_type, '')
+        self.assertRaisesRegexp(
+            DeprecationWarning,
+            "1gen Shells doesn\'t supported",
+            Chassis,
+            shell_name,
+            name,
+            unique_id,
+            shell_type,
+        )
 
-        
+
 class TestModule(unittest.TestCase):
     def setUp(self):
         self.shell_name = 'test shell name'
@@ -58,7 +67,7 @@ class TestPort(unittest.TestCase):
         self.shell_name = 'test shell name'
         self.name = 'test name'
         self.unique_id = 'test unique id'
-        self.shell_type = AVAILABLE_SHELL_TYPES[-1]
+        self.shell_type = Port.AVAILABLE_SHELL_TYPES[-1]
         self.resource = Port(self.shell_name, self.name, self.unique_id, self.shell_type)
 
     def test_logical_name_getter(self):
@@ -124,7 +133,13 @@ class TestPort(unittest.TestCase):
 
     def test_no_shell_name(self):
         shell_name = ''
-        resource = Port(shell_name, self.name, self.unique_id)
 
-        self.assertEqual(resource.shell_name, '')
-        self.assertEqual(resource.shell_type, '')
+        self.assertRaisesRegexp(
+            DeprecationWarning,
+            "1gen Shells doesn\'t supported",
+            Port,
+            shell_name,
+            self.name,
+            self.unique_id,
+            self.shell_type,
+        )
