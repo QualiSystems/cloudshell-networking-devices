@@ -15,5 +15,11 @@ class TestCliCliHandlerInterface(unittest.TestCase):
                                                 "abstract methods discover"):
             self.tested_class()
 
+    def test_discover_does_nothing(self):
+        class TestedClass(AutoloadOperationsInterface):
+            def discover(self):
+                return super(TestedClass, self).discover()
 
+        tested_class = TestedClass()
 
+        self.assertIsNone(tested_class.discover())

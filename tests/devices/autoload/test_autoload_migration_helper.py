@@ -80,6 +80,84 @@ class TestLegacyUtils(unittest.TestCase):
                                                                                           '',
                                                                                           attrs)
 
+    def test___attach_attributes_to_resource(self):
+        resource = mock.MagicMock()
+        relative_addr = 'address'
+        attr_name = 'attr_name'
+        attr_val = mock.MagicMock()
+        attribute = mock.MagicMock(attribute_name=attr_name, attribute_value=attr_val)
+        attributes = {relative_addr: [attribute]}
+
+        self.utils._LegacyUtils__attach_attributes_to_resource(attributes, relative_addr, resource)
+
+        self.assertEqual(getattr(resource, attr_name), attr_val)
+
+    def test___slice_parent_from_relative_path(self):
+        parent = 'parent_name'
+        expected_path = 'path'
+        relative_path = '{}/{}'.format(parent, expected_path)
+
+        result = self.utils._LegacyUtils__slice_parent_from_relative_path(parent, relative_path)
+
+        self.assertEqual(expected_path, result)
+
+    def test___slice_parent_from_relative_path_2(self):
+        expected_path = 'path'
+
+        result = self.utils._LegacyUtils__slice_parent_from_relative_path('', expected_path)
+
+        self.assertEqual(expected_path, result)
+
+    def test___set_models_hierarchy_recursively(self):
+        rank = 1
+        parent = mock.MagicMock()
+        resource = mock.MagicMock()
+        manipulated_resource = mock.MagicMock()
+        attributes = mock.MagicMock()
+        _dict = {
+            rank: [(parent, resource)],
+            rank + 1: [(mock.MagicMock(), mock.MagicMock())],
+        }
+
+        sub_resource = mock.MagicMock()
+        sliced_parent = mock.MagicMock()
+        self.utils._LegacyUtils__create_resource_from_datamodel = mock.MagicMock(
+            return_value=sub_resource)
+        self.utils._LegacyUtils__attach_attributes_to_resource = mock.MagicMock()
+        self.utils._LegacyUtils__slice_parent_from_relative_path = mock.MagicMock(
+            return_value=sliced_parent)
+
+        self.utils._LegacyUtils__set_models_hierarchy_recursively(
+            _dict, rank, manipulated_resource, parent, attributes)
+
+        self.utils._LegacyUtils__create_resource_from_datamodel.assert_called_once_with(
+            resource.model.replace(' ', ''), resource.name)
+        self.utils._LegacyUtils__attach_attributes_to_resource.assert_called_once_with(
+            attributes, resource.relative_address, sub_resource)
+        self.utils._LegacyUtils__slice_parent_from_relative_path.assert_called_once_with(
+            parent, resource.relative_address)
+        manipulated_resource.add_sub_resource.assert_called_once_with(sliced_parent, sub_resource)
+
+    def test___set_models_hierarchy_recursively_without_rank(self):
+        rank = 1
+        parent = mock.MagicMock()
+        resource = mock.MagicMock()
+        manipulated_resource = mock.MagicMock()
+        attributes = mock.MagicMock()
+        _dict = {
+            2: [(parent, resource)],
+        }
+
+        self.assertRaises(
+            KeyError,
+            self.utils._LegacyUtils__set_models_hierarchy_recursively,
+            _dict,
+            rank,
+            manipulated_resource,
+            parent,
+            attributes
+        )
+
 
 class TestAutoloadMigrationHelper(unittest.TestCase):
 

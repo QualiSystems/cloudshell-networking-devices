@@ -14,3 +14,16 @@ class TestCliCliHandlerInterface(unittest.TestCase):
         with self.assertRaisesRegexp(TypeError, "Can't instantiate abstract class TestedClass with "
                                                 "abstract methods health_check, shutdown"):
             self.tested_class()
+
+    def test_abstract_methods_do_nothing(self):
+        class TestedClass(StateOperationsInterface):
+            def shutdown(self):
+                return super(TestedClass, self).shutdown()
+
+            def health_check(self):
+                return super(TestedClass, self).health_check()
+
+        tested_class = TestedClass()
+
+        self.assertIsNone(tested_class.health_check())
+        self.assertIsNone(tested_class.shutdown())

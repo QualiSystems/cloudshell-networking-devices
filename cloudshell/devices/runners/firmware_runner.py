@@ -3,8 +3,7 @@
 
 from abc import abstractproperty
 
-from cloudshell.core.logger import qs_logger
-from cloudshell.devices.networking_utils import UrlParser
+from cloudshell.devices.networking_utils import UrlParser, command_logging
 from cloudshell.devices.runners.interfaces.firmware_runner_interface import FirmwareRunnerInterface
 
 
@@ -12,7 +11,7 @@ class FirmwareRunner(FirmwareRunnerInterface):
     def __init__(self, logger, cli_handler):
         """Handle firmware upgrade process
 
-        :param qs_logger logger: logger
+        :param logging.Logger logger: logger
         """
         self._logger = logger
         self._timeout = 3600
@@ -28,12 +27,13 @@ class FirmwareRunner(FirmwareRunnerInterface):
 
     @abstractproperty
     def load_firmware_flow(self):
-        """ Load Firmaware flow property
-        :return: LoadFirmawareFlow object
+        """ Load Firmware flow property
+        :return: LoadFirmwareFlow object
         """
 
         pass
 
+    @command_logging
     def load_firmware(self, path, vrf_management_name=None):
         """Update firmware version on device by loading provided image, performs following steps:
 
