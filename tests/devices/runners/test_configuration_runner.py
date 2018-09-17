@@ -166,6 +166,53 @@ class TestConfigurationRunner(unittest.TestCase):
             self.runner.orchestration_restore(saved_artifact_info=artifact_info,
                                               custom_params=custom_params)
 
+    @mock.patch('cloudshell.devices.runners.configuration_runner.JsonRequestDeserializer')
+    @mock.patch(
+        'cloudshell.devices.runners.configuration_runner._validate_custom_params', mock.MagicMock())
+    def test_orchestration_restore_with_incompatible_resource(self, json_request_deserializer_class):
+        artifact_info = '{"saved_artifacts_info": {}}'
+
+        self.runner._validate_artifact_info = mock.MagicMock()
+        self.runner.resource_config.name = 'resource name 2'
+
+        parsed_artifact_info = mock.MagicMock()
+        parsed_artifact_info.saved_artifacts_info.restore_rules.requires_same_resource = True
+        parsed_artifact_info.saved_artifacts_info.resource_name = 'resource name 1'
+        json_request_deserializer_class.return_value = parsed_artifact_info
+
+        self.assertRaisesRegexp(
+            Exception,
+            'Incompatible resource',
+            self.runner.orchestration_restore,
+            artifact_info,
+        )
+
+    @mock.patch('cloudshell.devices.runners.configuration_runner.JsonRequestDeserializer')
+    @mock.patch(
+        'cloudshell.devices.runners.configuration_runner._validate_custom_params', mock.MagicMock())
+    def test_orchestration_restore_saved_artifact_identifier_startup(
+            self, json_request_deserializer_class):
+
+        artifact_info = '{"saved_artifacts_info": {}}'
+
+        self.runner.restore = mock.MagicMock()
+        self.runner._validate_artifact_info = mock.MagicMock()
+
+        parsed_artifact_info = mock.MagicMock()
+        parsed_artifact_info.saved_artifacts_info.restore_rules.requires_same_resource = False
+        parsed_artifact_info.saved_artifacts_info.saved_artifact.identifier = 'startup'
+        json_request_deserializer_class.return_value = parsed_artifact_info
+
+        self.runner.orchestration_restore(artifact_info)
+
+        self.runner.restore.assert_called_once_with(
+            configuration_type='startup',
+            restore_method='override',
+            vrf_management_name=None,
+            path="{}:{}".format(
+                parsed_artifact_info.saved_artifacts_info.saved_artifact.artifact_type,
+                parsed_artifact_info.saved_artifacts_info.saved_artifact.identifier))
+
     @mock.patch("cloudshell.devices.runners.configuration_runner.UrlParser")
     def test_get_path(self, url_parser_class):
         """Check that method will return UrlParser.build_url() result"""
@@ -202,6 +249,29 @@ class TestConfigurationRunner(unittest.TestCase):
         with self.assertRaisesRegexp(Exception, "Failed to build path url to remote host"):
             self.runner.get_path(path="some path")
 
+    def test_get_path_for_default_file_system(self):
+        class TestedClass(ConfigurationRunner):
+            @property
+            def file_system(self):
+                return 'flash:'
+
+            def restore_flow(self):
+                pass
+
+            def save_flow(self):
+                pass
+
+        self.resource_config.backup_location = 'resource_startup.cfg'
+        self.resource_config.backup_type = ConfigurationRunner.DEFAULT_FILE_SYSTEM.lower()
+
+        tested_class = TestedClass(self.logger, self.resource_config, self.api, self.cli_handler)
+
+        path = tested_class.get_path()
+        expected_path = '{}//{}'.format(
+            tested_class.file_system, self.resource_config.backup_location)
+
+        self.assertEqual(expected_path, path)
+
     def test_validate_configuration_type(self):
         """Check that method will raise Exception if configuration_type is not "startup" or "running" """
         with self.assertRaisesRegexp(Exception, "Configuration Type is invalid"):
@@ -216,6 +286,17 @@ class TestConfigurationRunner(unittest.TestCase):
         # verify
         with self.assertRaisesRegexp(Exception, "Mandatory field {} is missing in Saved Artifact Info "
                                                 "request json".format(required_attr)):
+            self.runner._validate_artifact_info(saved_config=config)
+
+    def test_validate_artifact_info_missing_attr2(self):
+        config = object()
+        required_attr = "test_required_attr"
+        self.runner.REQUIRED_SAVE_ATTRIBUTES_LIST = [(required_attr, required_attr)]
+
+        # verify
+        with self.assertRaisesRegexp(
+                Exception, 'Mandatory field {} is missing in Saved Artifact Info '
+                           'request json'.format(required_attr)):
             self.runner._validate_artifact_info(saved_config=config)
 
     def test_validate_artifact_info_missing_nested_attr(self):
@@ -238,3 +319,38 @@ class TestConfigurationRunner(unittest.TestCase):
         # verify
         self.assertEqual(result, orchestration_restore_rules)
         orchestration_restore_rules_class.assert_called_once_with(True)
+
+    def test_prop_cli_handler(self):
+        class TestedClass(ConfigurationRunner):
+            def file_system(self):
+                pass
+
+            def restore_flow(self):
+                pass
+
+            def save_flow(self):
+                pass
+
+        tested_class = TestedClass(self.logger, self.resource_config, self.api, self.cli_handler)
+
+        self.assertEqual(self.cli_handler, tested_class.cli_handler)
+
+    def test_save_and_restore_flows_do_nothing(self):
+        class TestedClass(ConfigurationRunner):
+            @property
+            def save_flow(self):
+                return super(TestedClass, self).save_flow
+
+            @property
+            def restore_flow(self):
+                return super(TestedClass, self).restore_flow
+
+            @property
+            def file_system(self):
+                return super(TestedClass, self).file_system
+
+        tested_class = TestedClass(self.logger, self.resource_config, self.api, self.cli_handler)
+
+        self.assertIsNone(tested_class.save_flow)
+        self.assertIsNone(tested_class.restore_flow)
+        self.assertIsNone(tested_class.file_system)

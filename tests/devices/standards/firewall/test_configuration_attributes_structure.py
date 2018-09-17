@@ -292,3 +292,10 @@ class TestGenericFirewallResource(unittest.TestCase):
         result = self.resource.vrf_management_name
         # verify
         self.assertEqual(result, expected_val)
+
+    def test_no_shell_name(self):
+        shell_name = ''
+
+        resource = GenericFirewallResource(shell_name, self.name, self.supported_os)
+
+        self.assertEqual('', resource.namespace_prefix)

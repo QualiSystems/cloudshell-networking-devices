@@ -149,3 +149,25 @@ class TestCliHandlerImpl(unittest.TestCase):
         self.cli_handler._cli.get_session.assert_called_once_with(self.cli_handler._new_sessions(),
                                                                   mode,
                                                                   self.cli_handler._logger)
+
+    def test_enable_and_config_mode_does_nothing(self):
+        class TestedClass(CliHandlerImpl):
+            @property
+            def enable_mode(self):
+                return super(TestedClass, self).enable_mode
+
+            @property
+            def config_mode(self):
+                return super(TestedClass, self).config_mode
+
+        tested_class = TestedClass(self.cli, self.config, self.logger, self.api)
+
+        self.assertIsNone(tested_class.enable_mode)
+        self.assertIsNone(tested_class.config_mode)
+
+    def test_on_session_start_does_nothing(self):
+        session = mock.MagicMock()
+
+        self.assertIsNone(
+            self.cli_handler.on_session_start(session, self.logger)
+        )

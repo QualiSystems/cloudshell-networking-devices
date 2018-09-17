@@ -163,6 +163,38 @@ class TestGenericResource(unittest.TestCase):
         self.assertIn(attr_key, self.resource.attributes)
         self.assertEqual(attr_value, self.resource.attributes[attr_key])
 
+    def test_model_name_getter(self):
+        expected_val = "test value"
+        self.resource.attributes = {
+            "{}{}".format(self.resource.shell_type, "Model Name"): expected_val
+        }
+        # act
+        result = self.resource.model_name
+        # verify
+        self.assertEqual(result, expected_val)
+
+    def test_model_name_setter(self):
+        attr_value = "test value"
+        # act
+        self.resource.model_name = attr_value
+        # verify
+        attr_key = "{}{}".format(self.resource.shell_type, "Model Name")
+        self.assertIn(attr_key, self.resource.attributes)
+        self.assertEqual(attr_value, self.resource.attributes[attr_key])
+
+    def test_raise_exception_if_unavailable_shell_type(self):
+        shell_type = 'unavailable_shell_type'
+
+        self.assertRaisesRegexp(
+            Exception,
+            'Unavailable shell type',
+            GenericResource,
+            self.shell_name,
+            self.name,
+            self.unique_id,
+            shell_type,
+        )
+
 
 class TestGenericChassis(unittest.TestCase):
     def setUp(self):

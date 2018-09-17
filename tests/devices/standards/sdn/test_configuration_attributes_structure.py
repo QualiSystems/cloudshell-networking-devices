@@ -105,3 +105,10 @@ class TestGenericSDNResource(unittest.TestCase):
         result = self.resource.remove_trunk_ports
         # verify
         self.assertEqual(result, expected_val)
+
+    def test_no_shell_name(self):
+        shell_name = ''
+
+        resource = GenericSDNResource(shell_name=shell_name)
+
+        self.assertEqual('', resource.namespace_prefix)

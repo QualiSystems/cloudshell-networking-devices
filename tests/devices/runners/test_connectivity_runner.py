@@ -394,3 +394,30 @@ class TestConnectivityRunner(unittest.TestCase):
         # verify
         connectivity_success_response_class.assert_called_once_with(
             action, "Add Vlan {} configuration successfully completed".format(action.connectionParams.vlanId))
+
+    def test_prop_cli_handler(self):
+        class TestedClass(ConnectivityRunner):
+            def add_vlan_flow(self):
+                pass
+
+            def remove_vlan_flow(self):
+                pass
+
+        tested_class = TestedClass(self.logger, self.cli_handler)
+
+        self.assertEqual(self.cli_handler, tested_class.cli_handler)
+
+    def test_add_and_remove_vlan_flow_do_nothing(self):
+        class TestedClass(ConnectivityRunner):
+            @property
+            def remove_vlan_flow(self):
+                return super(TestedClass, self).remove_vlan_flow
+
+            @property
+            def add_vlan_flow(self):
+                return super(TestedClass, self).add_vlan_flow
+
+        tested_class = TestedClass(self.logger, self.cli_handler)
+
+        self.assertIsNone(tested_class.add_vlan_flow)
+        self.assertIsNone(tested_class.remove_vlan_flow)
