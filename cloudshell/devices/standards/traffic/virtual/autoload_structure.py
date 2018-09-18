@@ -6,27 +6,25 @@ AVAILABLE_SHELL_TYPES = ["CS_VirtualTrafficGeneratorChassis", "CS_VirtualTraffic
 
 
 class Chassis(AbstractResource):
-    RESOURCE_MODEL = "Virtual Traffic Generator Chassis"
+    RESOURCE_MODEL = "VirtualTrafficGeneratorChassis"
     RELATIVE_PATH_TEMPLATE = "CH"
 
     def __init__(self, shell_name, name, unique_id, shell_type="CS_VirtualTrafficGeneratorChassis"):
         super(Chassis, self).__init__(shell_name, name, unique_id)
 
-        if shell_name:
-            self.shell_name = "{}.".format(shell_name)
-            if shell_type in AVAILABLE_SHELL_TYPES:
-                self.shell_type = "{}.".format(shell_type)
-            else:
-                raise Exception(self.__class__.__name__, "Unavailable shell type {shell_type}."
-                                                         "Shell type should be one of: {avail}"
-                                .format(shell_type=shell_type, avail=", ".join(AVAILABLE_SHELL_TYPES)))
-        else:
-            self.shell_name = ""
-            self.shell_type = ""
+        if shell_type not in AVAILABLE_SHELL_TYPES:
+            raise Exception(
+                self.__class__.__name__,
+                "Unavailable shell type {shell_type}.Shell type should be one of: {avail}".format(
+                    shell_type=shell_type, avail=", ".join(AVAILABLE_SHELL_TYPES)),
+            )
+
+        self.shell_name = "{}.".format(shell_name)
+        self.shell_type = "{}.".format(shell_type)
 
 
 class Module(AbstractResource):
-    RESOURCE_MODEL = "Virtual Traffic Generator Module"
+    RESOURCE_MODEL = "VirtualTrafficGeneratorModule"
     RELATIVE_PATH_TEMPLATE = "M"
 
     @property
@@ -49,22 +47,20 @@ class Module(AbstractResource):
 
 
 class Port(AbstractResource):
-    RESOURCE_MODEL = "Virtual Traffic Generator Port"
+    RESOURCE_MODEL = "VirtualTrafficGeneratorPort"
     RELATIVE_PATH_TEMPLATE = "P"
 
     def __init__(self, shell_name, name, unique_id, shell_type="CS_VirtualTrafficGeneratorPort"):
         super(Port, self).__init__(shell_name, name, unique_id)
 
-        if shell_name:
-            if shell_type in AVAILABLE_SHELL_TYPES:
-                self.shell_type = "{}.".format(shell_type)
-            else:
-                raise Exception(self.__class__.__name__, "Unavailable shell type {shell_type}."
-                                                         "Shell type should be one of: {avail}"
-                                .format(shell_type=shell_type, avail=", ".join(AVAILABLE_SHELL_TYPES)))
-        else:
-            self.shell_name = ""
-            self.shell_type = ""
+        if shell_type not in AVAILABLE_SHELL_TYPES:
+            raise Exception(
+                self.__class__.__name__,
+                "Unavailable shell type {shell_type}.Shell type should be one of: {avail}".format(
+                    shell_type=shell_type, avail=", ".join(AVAILABLE_SHELL_TYPES)),
+            )
+
+        self.shell_type = "{}.".format(shell_type)
 
     @property
     def logical_name(self):

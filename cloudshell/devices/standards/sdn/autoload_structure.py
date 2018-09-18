@@ -5,23 +5,21 @@ AVAILABLE_SHELL_TYPES = ["CS_SDNController"]
 
 
 class SDNControllerResource(AbstractResource):
-    RESOURCE_MODEL = "SDN Controller"
+    RESOURCE_MODEL = "SDNController"
     RELATIVE_PATH_TEMPLATE = ""
 
     def __init__(self, shell_name, name, unique_id, shell_type="CS_SDNController"):
         super(SDNControllerResource, self).__init__(shell_name, name, unique_id)
 
-        if shell_name:
-            self.shell_name = "{}.".format(shell_name)
-            if shell_type in AVAILABLE_SHELL_TYPES:
-                self.shell_type = "{}.".format(shell_type)
-            else:
-                raise Exception(self.__class__.__name__, "Unavailable shell type {shell_type}."
-                                                         "Shell type should be one of: {avail}"
-                                .format(shell_type=shell_type, avail=", ".join(AVAILABLE_SHELL_TYPES)))
-        else:
-            self.shell_name = ""
-            self.shell_type = ""
+        if shell_type not in AVAILABLE_SHELL_TYPES:
+            raise Exception(
+                self.__class__.__name__,
+                "Unavailable shell type {shell_type}.Shell type should be one of: {avail}".format(
+                    shell_type=shell_type, avail=", ".join(AVAILABLE_SHELL_TYPES)),
+            )
+
+        self.shell_name = "{}.".format(shell_name)
+        self.shell_type = "{}.".format(shell_type)
 
     @property
     def model_name(self):
@@ -39,7 +37,7 @@ class SDNControllerResource(AbstractResource):
 
 
 class GenericSDNSwitch(AbstractResource):
-    RESOURCE_MODEL = "Generic SDN Switch"
+    RESOURCE_MODEL = "GenericSDNSwitch"
     RELATIVE_PATH_TEMPLATE = "OF"
 
     @property
@@ -58,7 +56,7 @@ class GenericSDNSwitch(AbstractResource):
 
 
 class GenericSDNPort(AbstractResource):
-    RESOURCE_MODEL = "Generic SDN Port"
+    RESOURCE_MODEL = "GenericSDNPort"
     RELATIVE_PATH_TEMPLATE = "P"
 
     @property

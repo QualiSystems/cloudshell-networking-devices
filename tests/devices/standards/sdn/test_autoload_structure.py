@@ -20,15 +20,20 @@ class TestSDNControllerResource(unittest.TestCase):
                                               shell_type=self.shell_type)
 
     def test_generic_resource_no_shell_name(self):
+        shell_name = ""
         name = "test name"
         unique_id = "test unique id"
         shell_type = ""
-        resource = SDNControllerResource(shell_name="",
-                                         name=name,
-                                         unique_id=unique_id,
-                                         shell_type=shell_type)
-        self.assertEqual(resource.shell_name, "")
-        self.assertEqual(resource.shell_type, "")
+
+        self.assertRaisesRegexp(
+            DeprecationWarning,
+            "1gen Shells doesn't supported",
+            SDNControllerResource,
+            shell_name,
+            name,
+            unique_id,
+            shell_type,
+        )
 
     def test_model_name_setter(self):
         """Check that property setter will correctly add attribute value into the internal attributes dictionary"""

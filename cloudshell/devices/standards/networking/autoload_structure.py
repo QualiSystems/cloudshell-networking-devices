@@ -14,23 +14,21 @@ __all__ = ["GenericResource", "GenericChassis",
 
 
 class GenericResource(AbstractResource):
-    RESOURCE_MODEL = "Generic Resource"
+    RESOURCE_MODEL = "GenericResource"
     RELATIVE_PATH_TEMPLATE = ""
 
     def __init__(self, shell_name, name, unique_id, shell_type="CS_Switch"):
         super(GenericResource, self).__init__(shell_name, name, unique_id)
 
-        if shell_name:
-            self.shell_name = "{}.".format(shell_name)
-            if shell_type in AVAILABLE_SHELL_TYPES:
-                self.shell_type = "{}.".format(shell_type)
-            else:
-                raise Exception(self.__class__.__name__, "Unavailable shell type {shell_type}."
-                                                         "Shell type should be one of: {avail}"
-                                .format(shell_type=shell_type, avail=", ".join(AVAILABLE_SHELL_TYPES)))
-        else:
-            self.shell_name = ""
-            self.shell_type = ""
+        if shell_type not in AVAILABLE_SHELL_TYPES:
+            raise Exception(
+                self.__class__.__name__,
+                "Unavailable shell type {shell_type}.Shell type should be one of: {avail}".format(
+                    shell_type=shell_type, avail=", ".join(AVAILABLE_SHELL_TYPES)),
+            )
+
+        self.shell_name = "{}.".format(shell_name)
+        self.shell_type = "{}.".format(shell_type)
 
     @property
     def contact_name(self):
@@ -125,7 +123,7 @@ class GenericResource(AbstractResource):
 
 
 class GenericChassis(AbstractResource):
-    RESOURCE_MODEL = "Generic Chassis"
+    RESOURCE_MODEL = "GenericChassis"
     RELATIVE_PATH_TEMPLATE = "CH"
 
     @property
@@ -159,7 +157,7 @@ class GenericChassis(AbstractResource):
 
 
 class GenericModule(AbstractResource):
-    RESOURCE_MODEL = "Generic Module"
+    RESOURCE_MODEL = "GenericModule"
     RELATIVE_PATH_TEMPLATE = "M"
 
     @property
@@ -212,7 +210,7 @@ class GenericModule(AbstractResource):
 
 
 class GenericSubModule(AbstractResource):
-    RESOURCE_MODEL = "Generic Sub Module"
+    RESOURCE_MODEL = "GenericSubModule"
     RELATIVE_PATH_TEMPLATE = "SM"
 
     @property
@@ -265,8 +263,13 @@ class GenericSubModule(AbstractResource):
 
 
 class GenericPort(AbstractResource):
-    RESOURCE_MODEL = "Generic Port"
+    RESOURCE_MODEL = "GenericPort"
     RELATIVE_PATH_TEMPLATE = "P"
+    FAMILY_NAME = 'CS_Port'
+
+    def __init__(self, shell_name, name, unique_id):
+        super(GenericPort, self).__init__(shell_name, name, unique_id)
+        self.family_name = '{}.'.format(self.FAMILY_NAME)
 
     @property
     def mac_address(self):
@@ -353,7 +356,7 @@ class GenericPort(AbstractResource):
         """
         :rtype: float
         """
-        return self.attributes.get("{}Bandwidth".format(self.namespace), 0)
+        return self.attributes.get("{}Bandwidth".format(self.family_name), 0)
 
     @bandwidth.setter
     @attr_length_validator
@@ -362,7 +365,7 @@ class GenericPort(AbstractResource):
         The current interface bandwidth, in MB.
         :type value: float
         """
-        self.attributes["{}Bandwidth".format(self.namespace)] = value or 0
+        self.attributes["{}Bandwidth".format(self.family_name)] = value or 0
 
     @property
     def mtu(self):
@@ -431,7 +434,7 @@ class GenericPort(AbstractResource):
 
 
 class GenericPowerPort(AbstractResource):
-    RESOURCE_MODEL = "Generic Power Port"
+    RESOURCE_MODEL = "GenericPowerPort"
     RELATIVE_PATH_TEMPLATE = "PP"
 
     @property
@@ -500,7 +503,7 @@ class GenericPowerPort(AbstractResource):
 
 
 class GenericPortChannel(AbstractResource):
-    RESOURCE_MODEL = "Generic Port Channel"
+    RESOURCE_MODEL = "GenericPortChannel"
     RELATIVE_PATH_TEMPLATE = "PC"
 
     @property
