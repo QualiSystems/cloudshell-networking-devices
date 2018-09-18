@@ -18,9 +18,6 @@ class AbstractResource(object):
         if not shell_name:
             raise DeprecationWarning("1gen Shells doesn't supported")
 
-        if ' ' in self.RESOURCE_MODEL:
-            raise ValueError('RESOURCE_MODEL must be without spaces')
-
         self._name = name
         self.shell_name = shell_name
         self.namespace = "{shell_name}.{resource_model}.".format(

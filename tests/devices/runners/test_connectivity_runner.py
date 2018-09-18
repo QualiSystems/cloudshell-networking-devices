@@ -267,14 +267,13 @@ class TestConnectivityRunner(unittest.TestCase):
         serialize_to_json.assert_called_once_with(driver_response_root)
 
     @mock.patch("cloudshell.devices.runners.connectivity_runner.Thread")
-    @mock.patch("cloudshell.devices.runners.connectivity_runner.ConnectivitySuccessResponse")
     @mock.patch("cloudshell.devices.runners.connectivity_runner.serialize_to_json")
     @mock.patch("cloudshell.devices.runners.connectivity_runner.jsonpickle")
     @mock.patch("cloudshell.devices.runners.connectivity_runner.JsonRequestDeserializer")
-    def test_apply_connectivity_changes_set_vlan_action_success(self, json_request_deserializer_class,
-                                                                jsonpickle, serialize_to_json,
-                                                                connectivity_success_response_class, thread_class):
+    def test_apply_connectivity_changes_set_vlan_action_success(
+            self, json_request_deserializer_class, jsonpickle, serialize_to_json, thread_class):
         """Check that method will add success response for the set_vlan action"""
+
         action_id = "some action id"
         vlan_id = "test vlan id"
         qnq = True
@@ -305,17 +304,13 @@ class TestConnectivityRunner(unittest.TestCase):
                                      args=(vlan_id, action.actionTarget.fullName, action.connectionParams.mode.lower(),
                                            qnq, ctag))
 
-        connectivity_success_response_class.assert_called_once_with(
-            action, "Add Vlan {} configuration successfully completed".format(action.connectionParams.vlanId))
-
-    @mock.patch("cloudshell.devices.runners.connectivity_runner.ConnectivityErrorResponse")
     @mock.patch("cloudshell.devices.runners.connectivity_runner.serialize_to_json")
     @mock.patch("cloudshell.devices.runners.connectivity_runner.jsonpickle")
     @mock.patch("cloudshell.devices.runners.connectivity_runner.JsonRequestDeserializer")
-    def test_apply_connectivity_changes_set_vlan_action_error(self, json_request_deserializer_class,
-                                                                jsonpickle, serialize_to_json,
-                                                                connectivity_error_response_class):
+    def test_apply_connectivity_changes_set_vlan_action_error(
+            self, json_request_deserializer_class, jsonpickle, serialize_to_json):
         """Check that method will add error response for the failed set_vlan action"""
+
         action_id = "some action id"
         self.connectivity_runner.result[action_id] = [(False, "failed action message")]
         action = mock.MagicMock(type="setVlan", actionId=action_id)
@@ -328,21 +323,14 @@ class TestConnectivityRunner(unittest.TestCase):
         # act
         self.connectivity_runner.apply_connectivity_changes(request=request)
 
-        # verify
-        connectivity_error_response_class.assert_called_once_with(
-            action, "Add Vlan {} configuration failed.\n"
-                    "Add Vlan configuration details:\n"
-                    "failed action message".format(action.connectionParams.vlanId))
-
     @mock.patch("cloudshell.devices.runners.connectivity_runner.Thread")
-    @mock.patch("cloudshell.devices.runners.connectivity_runner.ConnectivitySuccessResponse")
     @mock.patch("cloudshell.devices.runners.connectivity_runner.serialize_to_json")
     @mock.patch("cloudshell.devices.runners.connectivity_runner.jsonpickle")
     @mock.patch("cloudshell.devices.runners.connectivity_runner.JsonRequestDeserializer")
-    def test_apply_connectivity_changes_remove_vlan_action_success(self, json_request_deserializer_class,
-                                                                jsonpickle, serialize_to_json,
-                                                                connectivity_success_response_class, thread_class):
+    def test_apply_connectivity_changes_remove_vlan_action_success(
+            self, json_request_deserializer_class, jsonpickle, serialize_to_json, thread_class):
         """Check that method will add success response for the remove_vlan action"""
+
         action_id = "some action id"
         vlan_id = "test vlan id"
         self.connectivity_runner.result[action_id] = [(True, "success action message")]
@@ -363,18 +351,14 @@ class TestConnectivityRunner(unittest.TestCase):
                                      name=action_id,
                                      args=(vlan_id, action.actionTarget.fullName, action.connectionParams.mode.lower()))
 
-        connectivity_success_response_class.assert_called_once_with(
-            action, "Add Vlan {} configuration successfully completed".format(action.connectionParams.vlanId))
-
     @mock.patch("cloudshell.devices.runners.connectivity_runner.Thread")
-    @mock.patch("cloudshell.devices.runners.connectivity_runner.ConnectivitySuccessResponse")
     @mock.patch("cloudshell.devices.runners.connectivity_runner.serialize_to_json")
     @mock.patch("cloudshell.devices.runners.connectivity_runner.jsonpickle")
     @mock.patch("cloudshell.devices.runners.connectivity_runner.JsonRequestDeserializer")
-    def test_apply_connectivity_changes_unknown_action(self, json_request_deserializer_class,
-                                                                jsonpickle, serialize_to_json,
-                                                                connectivity_success_response_class, thread_class):
+    def test_apply_connectivity_changes_unknown_action(
+            self, json_request_deserializer_class, jsonpickle, serialize_to_json, thread_class):
         """Check that method will skip unknown action"""
+
         action_id = "some action id"
         vlan_id = "test vlan id"
         self.connectivity_runner.result[action_id] = [(True, "success action message")]
@@ -390,10 +374,6 @@ class TestConnectivityRunner(unittest.TestCase):
 
         # act
         self.connectivity_runner.apply_connectivity_changes(request=request)
-
-        # verify
-        connectivity_success_response_class.assert_called_once_with(
-            action, "Add Vlan {} configuration successfully completed".format(action.connectionParams.vlanId))
 
     def test_prop_cli_handler(self):
         class TestedClass(ConnectivityRunner):
