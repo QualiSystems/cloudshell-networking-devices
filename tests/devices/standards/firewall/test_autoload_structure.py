@@ -161,10 +161,14 @@ class TestGenericResource(unittest.TestCase):
         )
 
     def test_no_shell_name(self):
-        resource = GenericResource('', 'name', 'uniq_id')
-
-        self.assertEqual(resource.shell_name, '')
-        self.assertEqual(resource.shell_type, '')
+        self.assertRaisesRegexp(
+            DeprecationWarning,
+            r'1gen Shells doesn\'t supported',
+            GenericResource,
+            '',
+            'name',
+            'uniq_id',
+        )
 
 
 class TestGenericChassis(unittest.TestCase):
