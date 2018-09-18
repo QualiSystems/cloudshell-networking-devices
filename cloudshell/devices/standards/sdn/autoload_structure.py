@@ -11,7 +11,7 @@ class SDNControllerResource(BaseResource):
 
 
 class GenericSDNSwitch(AbstractResource):
-    RESOURCE_MODEL = "Generic SDN Switch"
+    RESOURCE_MODEL = "GenericSDNSwitch"
     RELATIVE_PATH_TEMPLATE = "OF"
 
     model_name = ResourceAttribute('namespace', 'Model Name')

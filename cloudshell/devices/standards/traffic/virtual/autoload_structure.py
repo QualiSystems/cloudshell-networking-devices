@@ -8,7 +8,7 @@ class Chassis(BaseResource):
 
 
 class Module(AbstractResource):
-    RESOURCE_MODEL = "Virtual Traffic Generator Module"
+    RESOURCE_MODEL = "VirtualTrafficGeneratorModule"
     RELATIVE_PATH_TEMPLATE = "M"
 
     device_model = ResourceAttribute('namespace', 'Model')
