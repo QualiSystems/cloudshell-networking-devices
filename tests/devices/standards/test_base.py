@@ -40,15 +40,6 @@ class TestAbstractResource(unittest.TestCase):
         self.assertEqual(result, "{}.{}".format(self.resource.shell_name,
                                                 self.resource.RESOURCE_MODEL))
 
-    # def test_cloudshell_model_name_getter_shell_name_is_empty(self):
-    #     """Check that property will return only resource model name if shell name is empty"""
-    #     self.resource.shell_name = ""
-    #     self.resource.RESOURCE_MODEL = "some resource modle"
-    #     # act
-    #     result = self.resource.cloudshell_model_name
-    #     # verify
-    #     self.assertEqual(result, self.resource.RESOURCE_MODEL)
-
     def test_name_setter(self):
         expected_val = "test value"
         # act
@@ -76,6 +67,19 @@ class TestAbstractResource(unittest.TestCase):
         self.resource.unique_identifier = value
 
         self.assertEqual(self.resource.unique_identifier, value[:MAX_STR_ATTR_LENGTH])
+
+    def test_raise_error_if_space_in_resource_model(self):
+        class TestedClass(AbstractResource):
+            RESOURCE_MODEL = 'tested val'
+
+        self.assertRaisesRegexp(
+            ValueError,
+            'Resource Model must be without spaces',
+            TestedClass,
+            'shell name',
+            'name',
+            'uniq id',
+        )
 
 
 class TestResourceAttribute(unittest.TestCase):

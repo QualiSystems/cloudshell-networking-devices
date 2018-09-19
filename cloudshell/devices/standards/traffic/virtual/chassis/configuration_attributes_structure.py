@@ -18,7 +18,7 @@ class TrafficGeneratorVChassisResource(BaseGenericResource):
             attributes=attributes,
         )
 
-        self.shell_type = "{}.".format(shell_type)
+        self.shell_type = shell_type
 
     @classmethod
     def from_context(cls, shell_name, context, supported_os=None, shell_type=None):
