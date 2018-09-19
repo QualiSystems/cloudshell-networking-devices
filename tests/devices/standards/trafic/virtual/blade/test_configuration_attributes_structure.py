@@ -11,14 +11,14 @@ class TestTrafficGeneratorVBladeResource(unittest.TestCase):
         shell_name = 'test shell name'
         context = mock.MagicMock()
 
-        result = TrafficGeneratorVBladeResource.from_context(context, shell_name=shell_name)
+        result = TrafficGeneratorVBladeResource.from_context(shell_name, context)
 
         self.assertIsInstance(result, TrafficGeneratorVBladeResource)
 
     def test_no_shell_name(self):
-        shell_name = ''
-
-        resource = TrafficGeneratorVBladeResource(shell_name=shell_name)
-
-        self.assertEqual('', resource.namespace_prefix)
-        self.assertEqual('', resource.shell_type)
+        self.assertRaisesRegexp(
+            DeprecationWarning,
+            '1gen Shells doesn\'t supported',
+            TrafficGeneratorVBladeResource,
+            shell_name='',
+        )
