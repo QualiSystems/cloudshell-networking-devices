@@ -14,17 +14,15 @@ class TestGenericResource(unittest.TestCase):
         self.shell_name = "test shell name"
         self.name = "test name"
         self.unique_id = "test unique id"
-        self.shell_type = GenericResource.AVAILABLE_SHELL_TYPES[-1]
-        self.resource = GenericResource(shell_name=self.shell_name,
-                                        name=self.name,
-                                        unique_id=self.unique_id,
-                                        shell_type=self.shell_type)
+        self.cs_family_type = GenericResource.AVAILABLE_CS_FAMILY_TYPES[-1]
+        self.resource = GenericResource(
+            self.shell_name, self.name, self.unique_id, self.cs_family_type)
 
     def test_generic_resource_no_shell_name(self):
         shell_name = ""
         name = "test name"
         unique_id = "test unique id"
-        shell_type = ""
+        cs_family_type = ""
 
         self.assertRaisesRegexp(
             DeprecationWarning,
@@ -33,14 +31,14 @@ class TestGenericResource(unittest.TestCase):
             shell_name,
             name,
             unique_id,
-            shell_type,
+            cs_family_type,
         )
 
     def test_contact_name_getter(self):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
         expected_val = "test value"
         self.resource.attributes = {
-            "{}{}".format(self.resource.shell_type, "Contact Name"): expected_val
+            "{}.{}".format(self.resource.CS_FAMILY_TYPE, "Contact Name"): expected_val
         }
         # act
         result = self.resource.contact_name
@@ -53,7 +51,7 @@ class TestGenericResource(unittest.TestCase):
         # act
         self.resource.contact_name = attr_value
         # verify
-        attr_key = "{}{}".format(self.resource.shell_type, "Contact Name")
+        attr_key = "{}.{}".format(self.resource.CS_FAMILY_TYPE, "Contact Name")
         self.assertIn(attr_key, self.resource.attributes)
         self.assertEqual(attr_value, self.resource.attributes[attr_key])
 
@@ -61,7 +59,7 @@ class TestGenericResource(unittest.TestCase):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
         expected_val = "test value"
         self.resource.attributes = {
-            "{}{}".format(self.resource.shell_type, "OS Version"): expected_val
+            "{}.{}".format(self.resource.CS_FAMILY_TYPE, "OS Version"): expected_val
         }
         # act
         result = self.resource.os_version
@@ -74,7 +72,7 @@ class TestGenericResource(unittest.TestCase):
         # act
         self.resource.os_version = attr_value
         # verify
-        attr_key = "{}{}".format(self.resource.shell_type, "OS Version")
+        attr_key = "{}.{}".format(self.resource.CS_FAMILY_TYPE, "OS Version")
         self.assertIn(attr_key, self.resource.attributes)
         self.assertEqual(attr_value, self.resource.attributes[attr_key])
 
@@ -82,7 +80,7 @@ class TestGenericResource(unittest.TestCase):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
         expected_val = "test value"
         self.resource.attributes = {
-            "{}{}".format(self.resource.shell_type, "System Name"): expected_val
+            "{}.{}".format(self.resource.CS_FAMILY_TYPE, "System Name"): expected_val
         }
         # act
         result = self.resource.system_name
@@ -95,7 +93,7 @@ class TestGenericResource(unittest.TestCase):
         # act
         self.resource.system_name = attr_value
         # verify
-        attr_key = "{}{}".format(self.resource.shell_type, "System Name")
+        attr_key = "{}.{}".format(self.resource.CS_FAMILY_TYPE, "System Name")
         self.assertIn(attr_key, self.resource.attributes)
         self.assertEqual(attr_value, self.resource.attributes[attr_key])
 
@@ -103,7 +101,7 @@ class TestGenericResource(unittest.TestCase):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
         expected_val = "test value"
         self.resource.attributes = {
-            "{}{}".format(self.resource.shell_type, "Vendor"): expected_val
+            "{}.{}".format(self.resource.CS_FAMILY_TYPE, "Vendor"): expected_val
         }
         # act
         result = self.resource.vendor
@@ -116,7 +114,7 @@ class TestGenericResource(unittest.TestCase):
         # act
         self.resource.vendor = attr_value
         # verify
-        attr_key = "{}{}".format(self.resource.shell_type, "Vendor")
+        attr_key = "{}.{}".format(self.resource.CS_FAMILY_TYPE, "Vendor")
         self.assertIn(attr_key, self.resource.attributes)
         self.assertEqual(attr_value, self.resource.attributes[attr_key])
 
@@ -124,7 +122,7 @@ class TestGenericResource(unittest.TestCase):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
         expected_val = "test value"
         self.resource.attributes = {
-            "{}{}".format(self.resource.shell_type, "Location"): expected_val
+            "{}.{}".format(self.resource.CS_FAMILY_TYPE, "Location"): expected_val
         }
         # act
         result = self.resource.location
@@ -137,7 +135,7 @@ class TestGenericResource(unittest.TestCase):
         # act
         self.resource.location = attr_value
         # verify
-        attr_key = "{}{}".format(self.resource.shell_type, "Location")
+        attr_key = "{}.{}".format(self.resource.CS_FAMILY_TYPE, "Location")
         self.assertIn(attr_key, self.resource.attributes)
         self.assertEqual(attr_value, self.resource.attributes[attr_key])
 
@@ -145,7 +143,7 @@ class TestGenericResource(unittest.TestCase):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
         expected_val = "test value"
         self.resource.attributes = {
-            "{}{}".format(self.resource.shell_type, "Model"): expected_val
+            "{}.{}".format(self.resource.CS_FAMILY_TYPE, "Model"): expected_val
         }
         # act
         result = self.resource.model
@@ -158,14 +156,14 @@ class TestGenericResource(unittest.TestCase):
         # act
         self.resource.model = attr_value
         # verify
-        attr_key = "{}{}".format(self.resource.shell_type, "Model")
+        attr_key = "{}.{}".format(self.resource.CS_FAMILY_TYPE, "Model")
         self.assertIn(attr_key, self.resource.attributes)
         self.assertEqual(attr_value, self.resource.attributes[attr_key])
 
     def test_model_name_getter(self):
         expected_val = "test value"
         self.resource.attributes = {
-            "{}{}".format(self.resource.shell_type, "Model Name"): expected_val
+            "{}.{}".format(self.resource.CS_FAMILY_TYPE, "Model Name"): expected_val
         }
         # act
         result = self.resource.model_name
@@ -177,21 +175,21 @@ class TestGenericResource(unittest.TestCase):
         # act
         self.resource.model_name = attr_value
         # verify
-        attr_key = "{}{}".format(self.resource.shell_type, "Model Name")
+        attr_key = "{}.{}".format(self.resource.CS_FAMILY_TYPE, "Model Name")
         self.assertIn(attr_key, self.resource.attributes)
         self.assertEqual(attr_value, self.resource.attributes[attr_key])
 
-    def test_raise_exception_if_unavailable_shell_type(self):
-        shell_type = 'unavailable_shell_type'
+    def test_raise_exception_if_unavailable_cs_family_type(self):
+        cs_family_type = 'unavailable_cs_family_type'
 
         self.assertRaisesRegexp(
             Exception,
-            'Unavailable shell type',
+            'Unavailable CS Family Type',
             GenericResource,
             self.shell_name,
             self.name,
             self.unique_id,
-            shell_type,
+            cs_family_type,
         )
 
 
@@ -208,7 +206,7 @@ class TestGenericChassis(unittest.TestCase):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
         expected_val = "test value"
         self.resource.attributes = {
-            "{}{}".format(self.resource.namespace, "Model"): expected_val
+            "{}.{}".format(self.resource.namespace, "Model"): expected_val
         }
         # act
         result = self.resource.model
@@ -221,7 +219,7 @@ class TestGenericChassis(unittest.TestCase):
         # act
         self.resource.model = attr_value
         # verify
-        attr_key = "{}{}".format(self.resource.namespace, "Model")
+        attr_key = "{}.{}".format(self.resource.namespace, "Model")
         self.assertIn(attr_key, self.resource.attributes)
         self.assertEqual(attr_value, self.resource.attributes[attr_key])
 
@@ -229,7 +227,7 @@ class TestGenericChassis(unittest.TestCase):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
         expected_val = "test value"
         self.resource.attributes = {
-            "{}{}".format(self.resource.namespace, "Serial Number"): expected_val
+            "{}.{}".format(self.resource.namespace, "Serial Number"): expected_val
         }
         # act
         result = self.resource.serial_number
@@ -242,7 +240,7 @@ class TestGenericChassis(unittest.TestCase):
         # act
         self.resource.serial_number = attr_value
         # verify
-        attr_key = "{}{}".format(self.resource.namespace, "Serial Number")
+        attr_key = "{}.{}".format(self.resource.namespace, "Serial Number")
         self.assertIn(attr_key, self.resource.attributes)
         self.assertEqual(attr_value, self.resource.attributes[attr_key])
 
@@ -260,7 +258,7 @@ class TestGenericModule(unittest.TestCase):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
         expected_val = "test value"
         self.resource.attributes = {
-            "{}{}".format(self.resource.namespace, "Model"): expected_val
+            "{}.{}".format(self.resource.namespace, "Model"): expected_val
         }
         # act
         result = self.resource.model
@@ -273,7 +271,7 @@ class TestGenericModule(unittest.TestCase):
         # act
         self.resource.model = attr_value
         # verify
-        attr_key = "{}{}".format(self.resource.namespace, "Model")
+        attr_key = "{}.{}".format(self.resource.namespace, "Model")
         self.assertIn(attr_key, self.resource.attributes)
         self.assertEqual(attr_value, self.resource.attributes[attr_key])
 
@@ -281,7 +279,7 @@ class TestGenericModule(unittest.TestCase):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
         expected_val = "test value"
         self.resource.attributes = {
-            "{}{}".format(self.resource.namespace, "Serial Number"): expected_val
+            "{}.{}".format(self.resource.namespace, "Serial Number"): expected_val
         }
         # act
         result = self.resource.serial_number
@@ -294,7 +292,7 @@ class TestGenericModule(unittest.TestCase):
         # act
         self.resource.serial_number = attr_value
         # verify
-        attr_key = "{}{}".format(self.resource.namespace, "Serial Number")
+        attr_key = "{}.{}".format(self.resource.namespace, "Serial Number")
         self.assertIn(attr_key, self.resource.attributes)
         self.assertEqual(attr_value, self.resource.attributes[attr_key])
 
@@ -302,7 +300,7 @@ class TestGenericModule(unittest.TestCase):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
         expected_val = "test value"
         self.resource.attributes = {
-            "{}{}".format(self.resource.namespace, "Version"): expected_val
+            "{}.{}".format(self.resource.namespace, "Version"): expected_val
         }
         # act
         result = self.resource.version
@@ -315,7 +313,7 @@ class TestGenericModule(unittest.TestCase):
         # act
         self.resource.version = attr_value
         # verify
-        attr_key = "{}{}".format(self.resource.namespace, "Version")
+        attr_key = "{}.{}".format(self.resource.namespace, "Version")
         self.assertIn(attr_key, self.resource.attributes)
         self.assertEqual(attr_value, self.resource.attributes[attr_key])
 
@@ -333,7 +331,7 @@ class TestGenericSubModule(unittest.TestCase):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
         expected_val = "test value"
         self.resource.attributes = {
-            "{}{}".format(self.resource.namespace, "Model"): expected_val
+            "{}.{}".format(self.resource.namespace, "Model"): expected_val
         }
         # act
         result = self.resource.model
@@ -346,7 +344,7 @@ class TestGenericSubModule(unittest.TestCase):
         # act
         self.resource.model = attr_value
         # verify
-        attr_key = "{}{}".format(self.resource.namespace, "Model")
+        attr_key = "{}.{}".format(self.resource.namespace, "Model")
         self.assertIn(attr_key, self.resource.attributes)
         self.assertEqual(attr_value, self.resource.attributes[attr_key])
 
@@ -354,7 +352,7 @@ class TestGenericSubModule(unittest.TestCase):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
         expected_val = "test value"
         self.resource.attributes = {
-            "{}{}".format(self.resource.namespace, "Serial Number"): expected_val
+            "{}.{}".format(self.resource.namespace, "Serial Number"): expected_val
         }
         # act
         result = self.resource.serial_number
@@ -367,7 +365,7 @@ class TestGenericSubModule(unittest.TestCase):
         # act
         self.resource.serial_number = attr_value
         # verify
-        attr_key = "{}{}".format(self.resource.namespace, "Serial Number")
+        attr_key = "{}.{}".format(self.resource.namespace, "Serial Number")
         self.assertIn(attr_key, self.resource.attributes)
         self.assertEqual(attr_value, self.resource.attributes[attr_key])
 
@@ -375,7 +373,7 @@ class TestGenericSubModule(unittest.TestCase):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
         expected_val = "test value"
         self.resource.attributes = {
-            "{}{}".format(self.resource.namespace, "Version"): expected_val
+            "{}.{}".format(self.resource.namespace, "Version"): expected_val
         }
         # act
         result = self.resource.version
@@ -388,7 +386,7 @@ class TestGenericSubModule(unittest.TestCase):
         # act
         self.resource.version = attr_value
         # verify
-        attr_key = "{}{}".format(self.resource.namespace, "Version")
+        attr_key = "{}.{}".format(self.resource.namespace, "Version")
         self.assertIn(attr_key, self.resource.attributes)
         self.assertEqual(attr_value, self.resource.attributes[attr_key])
 
@@ -406,7 +404,7 @@ class TestGenericPort(unittest.TestCase):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
         expected_val = "test value"
         self.resource.attributes = {
-            "{}{}".format(self.resource.namespace, "MAC Address"): expected_val
+            "{}.{}".format(self.resource.namespace, "MAC Address"): expected_val
         }
         # act
         result = self.resource.mac_address
@@ -419,7 +417,7 @@ class TestGenericPort(unittest.TestCase):
         # act
         self.resource.mac_address = attr_value
         # verify
-        attr_key = "{}{}".format(self.resource.namespace, "MAC Address")
+        attr_key = "{}.{}".format(self.resource.namespace, "MAC Address")
         self.assertIn(attr_key, self.resource.attributes)
         self.assertEqual(attr_value, self.resource.attributes[attr_key])
 
@@ -427,7 +425,7 @@ class TestGenericPort(unittest.TestCase):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
         expected_val = "test value"
         self.resource.attributes = {
-            "{}{}".format(self.resource.namespace, "L2 Protocol Type"): expected_val
+            "{}.{}".format(self.resource.namespace, "L2 Protocol Type"): expected_val
         }
         # act
         result = self.resource.l2_protocol_type
@@ -440,7 +438,7 @@ class TestGenericPort(unittest.TestCase):
         # act
         self.resource.l2_protocol_type = attr_value
         # verify
-        attr_key = "{}{}".format(self.resource.namespace, "L2 Protocol Type")
+        attr_key = "{}.{}".format(self.resource.namespace, "L2 Protocol Type")
         self.assertIn(attr_key, self.resource.attributes)
         self.assertEqual(attr_value, self.resource.attributes[attr_key])
 
@@ -448,7 +446,7 @@ class TestGenericPort(unittest.TestCase):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
         expected_val = "test value"
         self.resource.attributes = {
-            "{}{}".format(self.resource.namespace, "IPv4 Address"): expected_val
+            "{}.{}".format(self.resource.namespace, "IPv4 Address"): expected_val
         }
         # act
         result = self.resource.ipv4_address
@@ -461,7 +459,7 @@ class TestGenericPort(unittest.TestCase):
         # act
         self.resource.ipv4_address = attr_value
         # verify
-        attr_key = "{}{}".format(self.resource.namespace, "IPv4 Address")
+        attr_key = "{}.{}".format(self.resource.namespace, "IPv4 Address")
         self.assertIn(attr_key, self.resource.attributes)
         self.assertEqual(attr_value, self.resource.attributes[attr_key])
 
@@ -469,7 +467,7 @@ class TestGenericPort(unittest.TestCase):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
         expected_val = "test value"
         self.resource.attributes = {
-            "{}{}".format(self.resource.namespace, "IPv6 Address"): expected_val
+            "{}.{}".format(self.resource.namespace, "IPv6 Address"): expected_val
         }
         # act
         result = self.resource.ipv6_address
@@ -482,7 +480,7 @@ class TestGenericPort(unittest.TestCase):
         # act
         self.resource.ipv6_address = attr_value
         # verify
-        attr_key = "{}{}".format(self.resource.namespace, "IPv6 Address")
+        attr_key = "{}.{}".format(self.resource.namespace, "IPv6 Address")
         self.assertIn(attr_key, self.resource.attributes)
         self.assertEqual(attr_value, self.resource.attributes[attr_key])
 
@@ -490,7 +488,7 @@ class TestGenericPort(unittest.TestCase):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
         attr_value = "test value"
         self.resource.attributes = {
-            "{}{}".format(self.resource.namespace, "Port Description"): attr_value
+            "{}.{}".format(self.resource.namespace, "Port Description"): attr_value
         }
         # act
         result = self.resource.port_description
@@ -503,7 +501,7 @@ class TestGenericPort(unittest.TestCase):
         # act
         self.resource.port_description = attr_value
         # verify
-        attr_key = "{}{}".format(self.resource.namespace, "Port Description")
+        attr_key = "{}.{}".format(self.resource.namespace, "Port Description")
         self.assertIn(attr_key, self.resource.attributes)
         self.assertEqual(attr_value, self.resource.attributes[attr_key])
 
@@ -511,7 +509,7 @@ class TestGenericPort(unittest.TestCase):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
         attr_value = "test value"
         self.resource.attributes = {
-            "{}{}".format(self.resource.family_name, "Bandwidth"): attr_value
+            "{}.{}".format(self.resource.CS_FAMILY_TYPE, "Bandwidth"): attr_value
         }
         # act
         result = self.resource.bandwidth
@@ -524,7 +522,7 @@ class TestGenericPort(unittest.TestCase):
         # act
         self.resource.bandwidth = attr_value
         # verify
-        attr_key = "{}{}".format(self.resource.family_name, "Bandwidth")
+        attr_key = "{}.{}".format(self.resource.CS_FAMILY_TYPE, "Bandwidth")
         self.assertIn(attr_key, self.resource.attributes)
         self.assertEqual(attr_value, self.resource.attributes[attr_key])
 
@@ -532,7 +530,7 @@ class TestGenericPort(unittest.TestCase):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
         attr_value = "test value"
         self.resource.attributes = {
-            "{}{}".format(self.resource.namespace, "MTU"): attr_value
+            "{}.{}".format(self.resource.namespace, "MTU"): attr_value
         }
         # act
         result = self.resource.mtu
@@ -545,7 +543,7 @@ class TestGenericPort(unittest.TestCase):
         # act
         self.resource.mtu = attr_value
         # verify
-        attr_key = "{}{}".format(self.resource.namespace, "MTU")
+        attr_key = "{}.{}".format(self.resource.namespace, "MTU")
         self.assertIn(attr_key, self.resource.attributes)
         self.assertEqual(attr_value, self.resource.attributes[attr_key])
 
@@ -553,7 +551,7 @@ class TestGenericPort(unittest.TestCase):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
         attr_value = "test value"
         self.resource.attributes = {
-            "{}{}".format(self.resource.namespace, "Duplex"): attr_value
+            "{}.{}".format(self.resource.namespace, "Duplex"): attr_value
         }
         # act
         result = self.resource.duplex
@@ -566,7 +564,7 @@ class TestGenericPort(unittest.TestCase):
         # act
         self.resource.duplex = attr_value
         # verify
-        attr_key = "{}{}".format(self.resource.namespace, "Duplex")
+        attr_key = "{}.{}".format(self.resource.namespace, "Duplex")
         self.assertIn(attr_key, self.resource.attributes)
         self.assertEqual(attr_value, self.resource.attributes[attr_key])
 
@@ -574,7 +572,7 @@ class TestGenericPort(unittest.TestCase):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
         attr_value = "test value"
         self.resource.attributes = {
-            "{}{}".format(self.resource.namespace, "Adjacent"): attr_value
+            "{}.{}".format(self.resource.namespace, "Adjacent"): attr_value
         }
         # act
         result = self.resource.adjacent
@@ -587,7 +585,7 @@ class TestGenericPort(unittest.TestCase):
         # act
         self.resource.adjacent = attr_value
         # verify
-        attr_key = "{}{}".format(self.resource.namespace, "Adjacent")
+        attr_key = "{}.{}".format(self.resource.namespace, "Adjacent")
         self.assertIn(attr_key, self.resource.attributes)
         self.assertEqual(attr_value, self.resource.attributes[attr_key])
 
@@ -595,7 +593,7 @@ class TestGenericPort(unittest.TestCase):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
         attr_value = "test value"
         self.resource.attributes = {
-            "{}{}".format(self.resource.namespace, "Auto Negotiation"): attr_value
+            "{}.{}".format(self.resource.namespace, "Auto Negotiation"): attr_value
         }
         # act
         result = self.resource.auto_negotiation
@@ -608,7 +606,7 @@ class TestGenericPort(unittest.TestCase):
         # act
         self.resource.auto_negotiation = attr_value
         # verify
-        attr_key = "{}{}".format(self.resource.namespace, "Auto Negotiation")
+        attr_key = "{}.{}".format(self.resource.namespace, "Auto Negotiation")
         self.assertIn(attr_key, self.resource.attributes)
         self.assertEqual(attr_value, self.resource.attributes[attr_key])
 
@@ -626,7 +624,7 @@ class TestGenericPowerPort(unittest.TestCase):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
         expected_val = "test value"
         self.resource.attributes = {
-            "{}{}".format(self.resource.namespace, "Model"): expected_val
+            "{}.{}".format(self.resource.namespace, "Model"): expected_val
         }
         # act
         result = self.resource.model
@@ -639,7 +637,7 @@ class TestGenericPowerPort(unittest.TestCase):
         # act
         self.resource.model = attr_value
         # verify
-        attr_key = "{}{}".format(self.resource.namespace, "Model")
+        attr_key = "{}.{}".format(self.resource.namespace, "Model")
         self.assertIn(attr_key, self.resource.attributes)
         self.assertEqual(attr_value, self.resource.attributes[attr_key])
 
@@ -647,7 +645,7 @@ class TestGenericPowerPort(unittest.TestCase):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
         expected_val = "test value"
         self.resource.attributes = {
-            "{}{}".format(self.resource.namespace, "Serial Number"): expected_val
+            "{}.{}".format(self.resource.namespace, "Serial Number"): expected_val
         }
         # act
         result = self.resource.serial_number
@@ -660,7 +658,7 @@ class TestGenericPowerPort(unittest.TestCase):
         # act
         self.resource.serial_number = attr_value
         # verify
-        attr_key = "{}{}".format(self.resource.namespace, "Serial Number")
+        attr_key = "{}.{}".format(self.resource.namespace, "Serial Number")
         self.assertIn(attr_key, self.resource.attributes)
         self.assertEqual(attr_value, self.resource.attributes[attr_key])
 
@@ -668,7 +666,7 @@ class TestGenericPowerPort(unittest.TestCase):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
         expected_val = "test value"
         self.resource.attributes = {
-            "{}{}".format(self.resource.namespace, "Version"): expected_val
+            "{}.{}".format(self.resource.namespace, "Version"): expected_val
         }
         # act
         result = self.resource.version
@@ -681,7 +679,7 @@ class TestGenericPowerPort(unittest.TestCase):
         # act
         self.resource.version = attr_value
         # verify
-        attr_key = "{}{}".format(self.resource.namespace, "Version")
+        attr_key = "{}.{}".format(self.resource.namespace, "Version")
         self.assertIn(attr_key, self.resource.attributes)
         self.assertEqual(attr_value, self.resource.attributes[attr_key])
 
@@ -689,7 +687,7 @@ class TestGenericPowerPort(unittest.TestCase):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
         attr_value = "test value"
         self.resource.attributes = {
-            "{}{}".format(self.resource.namespace, "Port Description"): attr_value
+            "{}.{}".format(self.resource.namespace, "Port Description"): attr_value
         }
         # act
         result = self.resource.port_description
@@ -702,7 +700,7 @@ class TestGenericPowerPort(unittest.TestCase):
         # act
         self.resource.port_description = attr_value
         # verify
-        attr_key = "{}{}".format(self.resource.namespace, "Port Description")
+        attr_key = "{}.{}".format(self.resource.namespace, "Port Description")
         self.assertIn(attr_key, self.resource.attributes)
         self.assertEqual(attr_value, self.resource.attributes[attr_key])
 
@@ -720,7 +718,7 @@ class TestGenericPortChannel(unittest.TestCase):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
         expected_val = "test value"
         self.resource.attributes = {
-            "{}{}".format(self.resource.namespace, "Associated Ports"): expected_val
+            "{}.{}".format(self.resource.namespace, "Associated Ports"): expected_val
         }
         # act
         result = self.resource.associated_ports
@@ -733,7 +731,7 @@ class TestGenericPortChannel(unittest.TestCase):
         # act
         self.resource.associated_ports = attr_value
         # verify
-        attr_key = "{}{}".format(self.resource.namespace, "Associated Ports")
+        attr_key = "{}.{}".format(self.resource.namespace, "Associated Ports")
         self.assertIn(attr_key, self.resource.attributes)
         self.assertEqual(attr_value, self.resource.attributes[attr_key])
 
@@ -741,7 +739,7 @@ class TestGenericPortChannel(unittest.TestCase):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
         expected_val = "test value"
         self.resource.attributes = {
-            "{}{}".format(self.resource.namespace, "IPv4 Address"): expected_val
+            "{}.{}".format(self.resource.namespace, "IPv4 Address"): expected_val
         }
         # act
         result = self.resource.ipv4_address
@@ -754,7 +752,7 @@ class TestGenericPortChannel(unittest.TestCase):
         # act
         self.resource.ipv4_address = attr_value
         # verify
-        attr_key = "{}{}".format(self.resource.namespace, "IPv4 Address")
+        attr_key = "{}.{}".format(self.resource.namespace, "IPv4 Address")
         self.assertIn(attr_key, self.resource.attributes)
         self.assertEqual(attr_value, self.resource.attributes[attr_key])
 
@@ -762,7 +760,7 @@ class TestGenericPortChannel(unittest.TestCase):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
         expected_val = "test value"
         self.resource.attributes = {
-            "{}{}".format(self.resource.namespace, "IPv6 Address"): expected_val
+            "{}.{}".format(self.resource.namespace, "IPv6 Address"): expected_val
         }
         # act
         result = self.resource.ipv6_address
@@ -775,7 +773,7 @@ class TestGenericPortChannel(unittest.TestCase):
         # act
         self.resource.ipv6_address = attr_value
         # verify
-        attr_key = "{}{}".format(self.resource.namespace, "IPv6 Address")
+        attr_key = "{}.{}".format(self.resource.namespace, "IPv6 Address")
         self.assertIn(attr_key, self.resource.attributes)
         self.assertEqual(attr_value, self.resource.attributes[attr_key])
 
@@ -783,7 +781,7 @@ class TestGenericPortChannel(unittest.TestCase):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
         attr_value = "test value"
         self.resource.attributes = {
-            "{}{}".format(self.resource.namespace, "Port Description"): attr_value
+            "{}.{}".format(self.resource.namespace, "Port Description"): attr_value
         }
         # act
         result = self.resource.port_description
@@ -796,6 +794,6 @@ class TestGenericPortChannel(unittest.TestCase):
         # act
         self.resource.port_description = attr_value
         # verify
-        attr_key = "{}{}".format(self.resource.namespace, "Port Description")
+        attr_key = "{}.{}".format(self.resource.namespace, "Port Description")
         self.assertIn(attr_key, self.resource.attributes)
         self.assertEqual(attr_value, self.resource.attributes[attr_key])

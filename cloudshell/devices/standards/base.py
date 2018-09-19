@@ -4,13 +4,14 @@ from cloudshell.devices.standards.validators import attr_length_validator, Valid
 
 
 class AbstractResource(object):
-    RESOURCE_MODEL = ""
-    RELATIVE_PATH_TEMPLATE = ""
+    RESOURCE_MODEL = ''
+    RELATIVE_PATH_TEMPLATE = ''
+    CS_FAMILY_TYPE = ''
 
     name = ValidatedAttribute()
     unique_identifier = ValidatedAttribute()
 
-    def __init__(self, shell_name, name, unique_id):
+    def __init__(self, shell_name, name, unique_id, cs_family_type=CS_FAMILY_TYPE):
         """
 
         :param str shell_name:
@@ -21,11 +22,15 @@ class AbstractResource(object):
         if not shell_name:
             raise DeprecationWarning('1gen Shells doesn\'t supported')
 
+        if ' ' in self.RESOURCE_MODEL:
+            raise ValueError('Resource Model must be without spaces')
+
         self.name = name
         self.shell_name = shell_name
-        self.namespace = "{shell_name}.{resource_model}.".format(
-            shell_name=self.shell_name, resource_model=self.RESOURCE_MODEL.replace(" ", ""))
+        self.namespace = '{shell_name}.{resource_model}'.format(
+            shell_name=self.shell_name, resource_model=self.RESOURCE_MODEL)
         self.unique_identifier = unique_id
+        self.CS_FAMILY_TYPE = cs_family_type
         self.attributes = {}
         self.resources = {}
 
@@ -38,21 +43,25 @@ class AbstractResource(object):
     @property
     def cloudshell_model_name(self):
         """Return the name of the CloudShell model"""
-        if self.shell_name:
-            return "{shell_name}.{resource_model}".format(shell_name=self.shell_name,
-                                                          resource_model=self.RESOURCE_MODEL.replace(" ", ""))
-        else:
-            return self.RESOURCE_MODEL
+
+        return self.namespace
 
 
-class ResourceAttribute(object):
+class ResourceAttrLvl(object):
+    NAMESPACE = 'namespace'
+    CS_FAMILY_TYPE = 'CS_FAMILY_TYPE'
+
+
+class ResourceAttr(object):
+    LVL = ResourceAttrLvl
+
     def __init__(self, prefix_attr, name, default=None):
         self.prefix_attr = prefix_attr
         self.name = name
         self.default = default
 
     def get_key(self, instance):
-        return '{}{}'.format(getattr(instance, self.prefix_attr), self.name)
+        return '{}.{}'.format(getattr(instance, self.prefix_attr), self.name)
 
     def __get__(self, instance, owner):
         if instance is None:
@@ -68,84 +77,91 @@ class ResourceAttribute(object):
 
 
 class BaseResource(AbstractResource):
-    AVAILABLE_SHELL_TYPES = []
+    AVAILABLE_CS_FAMILY_TYPES = []
 
-    def __init__(self, shell_name, name, unique_id, shell_type):
-        super(BaseResource, self).__init__(shell_name, name, unique_id)
+    def __init__(self, shell_name, name, unique_id, cs_family_type):
+        super(BaseResource, self).__init__(shell_name, name, unique_id, cs_family_type)
 
-        if shell_type not in self.AVAILABLE_SHELL_TYPES:
-            raise Exception(
-                self.__class__.__name__,
-                'Unavailable shell type {shell_type}.Shell type should be one of: {avail}'.format(
-                    shell_type=shell_type, avail=', '.join(self.AVAILABLE_SHELL_TYPES)))
-
-        self.shell_name = '{}.'.format(shell_name)
-        self.shell_type = "{}.".format(shell_type)
+        if cs_family_type not in self.AVAILABLE_CS_FAMILY_TYPES:
+            msg = 'Unavailable CS Family Type {}. CS Family Type should be one of: {}'.format(
+                    cs_family_type, ', '.join(self.AVAILABLE_CS_FAMILY_TYPES))
+            raise Exception(self.__class__.__name__, msg)
 
 
 class BasePhysicalResource(BaseResource):
-    RESOURCE_MODEL = 'Generic Resource'
+    RESOURCE_MODEL = 'GenericResource'
     RELATIVE_PATH_TEMPLATE = ''
 
-    contact_name = ResourceAttribute('shell_type', 'Contact Name')
-    location = ResourceAttribute('shell_type', 'Location')
-    model = ResourceAttribute('shell_type', 'Model')
-    os_version = ResourceAttribute('shell_type', 'OS Version')
-    system_name = ResourceAttribute('shell_type', 'System Name')
-    vendor = ResourceAttribute('shell_type', 'Vendor')
+    contact_name = ResourceAttr(ResourceAttr.LVL.CS_FAMILY_TYPE, 'Contact Name')
+    location = ResourceAttr(ResourceAttr.LVL.CS_FAMILY_TYPE, 'Location')
+    model = ResourceAttr(ResourceAttr.LVL.CS_FAMILY_TYPE, 'Model')
+    os_version = ResourceAttr(ResourceAttr.LVL.CS_FAMILY_TYPE, 'OS Version')
+    system_name = ResourceAttr(ResourceAttr.LVL.CS_FAMILY_TYPE, 'System Name')
+    vendor = ResourceAttr(ResourceAttr.LVL.CS_FAMILY_TYPE, 'Vendor')
 
 
 class BaseGenericPort(AbstractResource):
-    RESOURCE_MODEL = 'Generic Port'
+    RESOURCE_MODEL = 'GenericPort'
     RELATIVE_PATH_TEMPLATE = 'P'
+    CS_FAMILY_TYPE = 'CS_Port'
 
-    adjacent = ResourceAttribute('namespace', 'Adjacent')
-    ipv4_address = ResourceAttribute('namespace', 'IPv4 Address')
-    ipv6_address = ResourceAttribute('namespace', 'IPv6 Address')
-    mac_address = ResourceAttribute('namespace', 'MAC Address')
-    port_description = ResourceAttribute('namespace', 'Port Description')
+    adjacent = ResourceAttr(ResourceAttr.LVL.NAMESPACE, 'Adjacent')
+    ipv4_address = ResourceAttr(ResourceAttr.LVL.NAMESPACE, 'IPv4 Address')
+    ipv6_address = ResourceAttr(ResourceAttr.LVL.NAMESPACE, 'IPv6 Address')
+    mac_address = ResourceAttr(ResourceAttr.LVL.NAMESPACE, 'MAC Address')
+    port_description = ResourceAttr(ResourceAttr.LVL.NAMESPACE, 'Port Description')
 
 
 class BaseGenericNetworkPort(BaseGenericPort):
-    auto_negotiation = ResourceAttribute('namespace', 'Auto Negotiation')
-    bandwidth = ResourceAttribute('namespace', 'Bandwidth', 0)
-    duplex = ResourceAttribute('namespace', 'Duplex', 'Half')
-    l2_protocol_type = ResourceAttribute('namespace', 'L2 Protocol Type')
-    mtu = ResourceAttribute('namespace', 'MTU', 0)
+    auto_negotiation = ResourceAttr(ResourceAttr.LVL.NAMESPACE, 'Auto Negotiation')
+    bandwidth = ResourceAttr(ResourceAttr.LVL.CS_FAMILY_TYPE, 'Bandwidth', 0)
+    duplex = ResourceAttr(ResourceAttr.LVL.NAMESPACE, 'Duplex', 'Half')
+    l2_protocol_type = ResourceAttr(ResourceAttr.LVL.NAMESPACE, 'L2 Protocol Type')
+    mtu = ResourceAttr(ResourceAttr.LVL.NAMESPACE, 'MTU', 0)
 
 
 class GenericChassis(AbstractResource):
-    RESOURCE_MODEL = 'Generic Chassis'
+    RESOURCE_MODEL = 'GenericChassis'
     RELATIVE_PATH_TEMPLATE = 'CH'
+    CS_FAMILY_TYPE = 'CS_Chassis'
 
-    model = ResourceAttribute('namespace', 'Model')
-    serial_number = ResourceAttribute('namespace', 'Serial Number')
+    model = ResourceAttr(ResourceAttr.LVL.NAMESPACE, 'Model')
+    serial_number = ResourceAttr(ResourceAttr.LVL.NAMESPACE, 'Serial Number')
 
 
 class GenericModule(AbstractResource):
-    RESOURCE_MODEL = 'Generic Module'
+    RESOURCE_MODEL = 'GenericModule'
     RELATIVE_PATH_TEMPLATE = 'M'
+    CS_FAMILY_TYPE = 'CS_Module'
 
-    model = ResourceAttribute('namespace', 'Model')
-    serial_number = ResourceAttribute('namespace', 'Serial Number')
-    version = ResourceAttribute('namespace', 'Version')
+    model = ResourceAttr(ResourceAttr.LVL.NAMESPACE, 'Model')
+    serial_number = ResourceAttr(ResourceAttr.LVL.NAMESPACE, 'Serial Number')
+    version = ResourceAttr(ResourceAttr.LVL.NAMESPACE, 'Version')
+
+
+class GenericSubModule(GenericModule):
+    RESOURCE_MODEL = 'GenericSubModule'
+    RELATIVE_PATH_TEMPLATE = 'SM'
+    CS_FAMILY_TYPE = 'CS_SubModule'
 
 
 class GenericPowerPort(AbstractResource):
     RESOURCE_MODEL = 'GenericPowerPort'
     RELATIVE_PATH_TEMPLATE = 'PP'
+    CS_FAMILY_TYPE = 'CS_PowerPort'
 
-    model = ResourceAttribute('namespace', 'Model')
-    port_description = ResourceAttribute('namespace', 'Port Description')
-    serial_number = ResourceAttribute('namespace', 'Serial Number')
-    version = ResourceAttribute('namespace', 'Version')
+    model = ResourceAttr(ResourceAttr.LVL.NAMESPACE, 'Model')
+    port_description = ResourceAttr(ResourceAttr.LVL.NAMESPACE, 'Port Description')
+    serial_number = ResourceAttr(ResourceAttr.LVL.NAMESPACE, 'Serial Number')
+    version = ResourceAttr(ResourceAttr.LVL.NAMESPACE, 'Version')
 
 
 class GenericPortChannel(AbstractResource):
-    RESOURCE_MODEL = 'Generic Port Channel'
+    RESOURCE_MODEL = 'GenericPortChannel'
     RELATIVE_PATH_TEMPLATE = 'PC'
+    CS_FAMILY_TYPE = 'CS_PortChannel'
 
-    associated_ports = ResourceAttribute('namespace', 'Associated Ports')
-    ipv4_address = ResourceAttribute('namespace', 'IPv4 Address')
-    ipv6_address = ResourceAttribute('namespace', 'IPv6 Address')
-    port_description = ResourceAttribute('namespace', 'Port Description')
+    associated_ports = ResourceAttr(ResourceAttr.LVL.NAMESPACE, 'Associated Ports')
+    ipv4_address = ResourceAttr(ResourceAttr.LVL.NAMESPACE, 'IPv4 Address')
+    ipv6_address = ResourceAttr(ResourceAttr.LVL.NAMESPACE, 'IPv6 Address')
+    port_description = ResourceAttr(ResourceAttr.LVL.NAMESPACE, 'Port Description')
