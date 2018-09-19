@@ -73,12 +73,12 @@ class LegacyUtils(object):
         return inspect.getmembers(sys.modules[__name__], inspect.isclass)
 
 
-def migrate_autoload_details(autoload_details, shell_name, shell_type):
+def migrate_autoload_details(autoload_details, shell_name, cs_family_type):
     """ Migrate autoload details. Add namespace for attributes
 
     :param autoload_details:
     :param shell_name:
-    :param shell_type:
+    :param cs_family_type:
     :return:
     """
 
@@ -90,8 +90,8 @@ def migrate_autoload_details(autoload_details, shell_name, shell_type):
     for attribute in autoload_details.attributes:
 
         if not attribute.relative_address:  # Root element
-            attribute.attribute_name = "{shell_type}.{attr_name}".format(shell_type=shell_type,
-                                                                         attr_name=attribute.attribute_name)
+            attribute.attribute_name = "{cs_family_type}.{attr_name}".format(
+                cs_family_type=cs_family_type, attr_name=attribute.attribute_name)
         else:
             attribute.attribute_name = "{model}.{attr_name}".format(model=mapping[attribute.relative_address],
                                                                     attr_name=attribute.attribute_name)

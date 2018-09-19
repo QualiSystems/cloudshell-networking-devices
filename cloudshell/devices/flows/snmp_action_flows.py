@@ -19,5 +19,5 @@ class BaseSnmpFlow(object):
 
 class AutoloadFlow(BaseSnmpFlow):
     @abstractmethod
-    def execute_flow(self, supported_os, shell_name, shell_type, resource_name):
+    def execute_flow(self, supported_os, shell_name, cs_family_type, resource_name):
         pass

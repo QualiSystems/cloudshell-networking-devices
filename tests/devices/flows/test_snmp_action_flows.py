@@ -20,9 +20,9 @@ class TestBaseSnmpFlow(unittest.TestCase):
 class TestAutoloadFlow(unittest.TestCase):
     def test_execute_flow_does_nothing(self):
         class TestedClass(AutoloadFlow):
-            def execute_flow(self, supported_os, shell_name, shell_type, resource_name):
+            def execute_flow(self, supported_os, shell_name, cs_family_type, resource_name):
                 return super(TestedClass, self).execute_flow(
-                    supported_os, shell_name, shell_type, resource_name)
+                    supported_os, shell_name, cs_family_type, resource_name)
 
         snmp_handler = mock.MagicMock()
         logger = mock.MagicMock()
@@ -30,8 +30,8 @@ class TestAutoloadFlow(unittest.TestCase):
 
         supported_os = mock.MagicMock()
         shell_name = mock.MagicMock()
-        shell_type = mock.MagicMock()
+        cs_family_type = mock.MagicMock()
         resource_name = mock.MagicMock()
 
         self.assertIsNone(tested_class.execute_flow(
-            supported_os, shell_name, shell_type, resource_name))
+            supported_os, shell_name, cs_family_type, resource_name))

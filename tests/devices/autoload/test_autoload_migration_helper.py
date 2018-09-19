@@ -175,11 +175,11 @@ class TestAutoloadMigrationHelper(unittest.TestCase):
         autoload_details = mock.MagicMock(resources=[resource],
                                           attributes=[root_attr, attr])
         shell_name = "shell_name"
-        shell_type = "shell_type"
+        cs_family_type = "cs_family_type"
         # act
-        result = migrate_autoload_details(autoload_details, shell_name, shell_type)
+        result = migrate_autoload_details(autoload_details, shell_name, cs_family_type)
         # verify
         self.assertEqual(result, autoload_details)
         self.assertEqual(resource.model, "shell_name.model")
-        self.assertEqual(root_attr.attribute_name, "shell_type.root_attr_name")
+        self.assertEqual(root_attr.attribute_name, "cs_family_type.root_attr_name")
         self.assertEqual(attr.attribute_name, "shell_name.model.attr_name")

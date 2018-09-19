@@ -1,21 +1,22 @@
-from cloudshell.devices.standards.base import AbstractResource, ResourceAttribute, BaseGenericPort,\
+from cloudshell.devices.standards.base import AbstractResource, ResourceAttr, BaseGenericPort,\
     BaseResource
 
 
 class SDNControllerResource(BaseResource):
-    RESOURCE_MODEL = "SDN Controller"
-    RELATIVE_PATH_TEMPLATE = ""
-    AVAILABLE_SHELL_TYPES = ["CS_SDNController"]
+    RESOURCE_MODEL = 'SDNController'
+    RELATIVE_PATH_TEMPLATE = ''
+    AVAILABLE_CS_FAMILY_TYPES = ['CS_SDNController']
+    CS_FAMILY_TYPE = 'CS_SDNController'
 
-    model_name = ResourceAttribute('shell_type', 'Model Name')
+    model_name = ResourceAttr(ResourceAttr.LVL.CS_FAMILY_TYPE, 'Model Name')
 
 
 class GenericSDNSwitch(AbstractResource):
-    RESOURCE_MODEL = "Generic SDN Switch"
-    RELATIVE_PATH_TEMPLATE = "OF"
+    RESOURCE_MODEL = 'GenericSDNSwitch'
+    RELATIVE_PATH_TEMPLATE = 'OF'
 
-    model_name = ResourceAttribute('namespace', 'Model Name')
+    model_name = ResourceAttr(ResourceAttr.LVL.NAMESPACE, 'Model Name')
 
 
 class GenericSDNPort(BaseGenericPort):
-    RESOURCE_MODEL = "Generic SDN Port"
+    RESOURCE_MODEL = 'GenericSDNPort'
