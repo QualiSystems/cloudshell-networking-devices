@@ -1,86 +1,36 @@
-class TrafficGeneratorVChassisResource(object):
+from cloudshell.devices.standards.base_configuration_attr_structure import BaseGenericResource, \
+    ROResourceAttr
+
+
+class TrafficGeneratorVChassisResource(BaseGenericResource):
+    user = ROResourceAttr(ROResourceAttr.LVL.NAMESPACE, 'User')
+    password = ROResourceAttr(ROResourceAttr.LVL.NAMESPACE, 'Password')
+    license_server = ROResourceAttr('shell_type', 'License Server')
+    cli_connection_type = ROResourceAttr(ROResourceAttr.LVL.NAMESPACE, 'CLI Connection Type', 'SSH')
+    cli_tcp_port = ROResourceAttr(ROResourceAttr.LVL.NAMESPACE, 'CLI TCP Port', 22)
+    sessions_concurrency_limit = ROResourceAttr(
+        ROResourceAttr.LVL.NAMESPACE, 'Sessions Concurrency Limit', 1)
+
     def __init__(self, address=None, family=None, shell_type=None, shell_name=None,
                  fullname=None, name=None, attributes=None):
-        """
+        super(TrafficGeneratorVChassisResource, self).__init__(
+            shell_name=shell_name, name=name, fullname=fullname, address=address, family=family,
+            attributes=attributes,
+        )
 
-        :param str address: IP address of the resource
-        :param str family: resource family
-        :param str shell_name: shell name
-        :param str fullname: full name of the resource
-        :param str name: name of the resource
-        :param dict[str, str] attributes: attributes of the resource
-        """
-        self.address = address
-        self.family = family
-        self.shell_name = shell_name
-        self.fullname = fullname
-        self.name = name
-        self.attributes = attributes or {}
-
-        if shell_name:
-            self.namespace_prefix = "{}.".format(self.shell_name)
-            self.shell_type = "{}.".format(shell_type)
-        else:
-            self.namespace_prefix = ""
-            self.shell_type = ""
-
-    @property
-    def user(self):
-        """
-
-        :rtype: str
-        """
-        return self.attributes.get("{}User".format(self.namespace_prefix), None)
-
-    @property
-    def password(self):
-        """
-
-        :rtype: string
-        """
-        return self.attributes.get("{}Password".format(self.namespace_prefix), None)
-
-    @property
-    def license_server(self):
-        """
-
-        :rtype: string
-        """
-        return self.attributes.get("{}License Server".format(self.shell_type), None)
-
-    @property
-    def cli_connection_type(self):
-        """
-
-        :rtype: str
-        """
-        return self.attributes.get("{}CLI Connection Type".format(self.namespace_prefix), "SSH")
-
-    @property
-    def cli_tcp_port(self):
-        """
-
-        :rtype: str
-        """
-        return self.attributes.get("{}CLI TCP Port".format(self.namespace_prefix), 22)
-
-    @property
-    def sessions_concurrency_limit(self):
-        """
-
-        :rtype: float
-        """
-        return self.attributes.get("{}Sessions Concurrency Limit".format(self.namespace_prefix), 1)
+        self.shell_type = "{}.".format(shell_type)
 
     @classmethod
-    def from_context(cls, context, shell_type=None, shell_name=None):
+    def from_context(cls, shell_name, context, supported_os=None, shell_type=None):
         """Create an instance of TrafficGeneratorVBladeResource from the given context
 
-        :param cloudshell.shell.core.driver_context.ResourceCommandContext context:
-        :param str shell_type: shell type
         :param str shell_name: shell name
+        :param cloudshell.shell.core.driver_context.ResourceCommandContext context:
+        :param list supported_os:
+        :param str shell_type: shell type
         :rtype: TrafficGeneratorVChassisResource
         """
+
         return cls(address=context.resource.address,
                    family=context.resource.family,
                    shell_type=shell_type,

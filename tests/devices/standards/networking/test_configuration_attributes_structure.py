@@ -3,7 +3,6 @@ import unittest
 import mock
 
 from cloudshell.devices.standards.networking.configuration_attributes_structure import GenericNetworkingResource
-from cloudshell.devices.standards.networking.configuration_attributes_structure import create_networking_resource_from_context
 
 
 class TestModule(unittest.TestCase):
@@ -13,9 +12,11 @@ class TestModule(unittest.TestCase):
         supported_os = "test OS"
         context = mock.MagicMock()
         # act
-        result = create_networking_resource_from_context(shell_name=shell_name,
-                                                         supported_os=supported_os,
-                                                         context=context)
+        result = GenericNetworkingResource.from_context(
+            shell_name=shell_name,
+            context=context,
+            supported_os=supported_os,
+        )
         # verify
         self.assertIsInstance(result, GenericNetworkingResource)
 
@@ -294,16 +295,19 @@ class TestGenericNetworkingResource(unittest.TestCase):
         self.assertEqual(result, expected_val)
 
     def test_no_shell_name(self):
-        shell_name = ''
-
-        resource = GenericNetworkingResource(shell_name, self.name, self.supported_os)
-
-        self.assertEqual('', resource.namespace_prefix)
+        self.assertRaisesRegexp(
+            DeprecationWarning,
+            '1gen Shells doesn\'t supported',
+            GenericNetworkingResource,
+            '',
+            self.name,
+            self.supported_os,
+        )
 
     def test_snmp_v3_auth_protocol(self):
         expected_val = 'test value'
         self.resource.attributes = {
-            '{}{}'.format(self.resource.namespace_prefix, 'SNMP V3 Authentication Protocol'):
+            '{}.{}'.format(self.resource.namespace_prefix, 'SNMP V3 Authentication Protocol'):
                 expected_val,
         }
 
@@ -312,7 +316,7 @@ class TestGenericNetworkingResource(unittest.TestCase):
     def test_snmp_v3_priv_protocol(self):
         expected_val = 'test value'
         self.resource.attributes = {
-            '{}{}'.format(self.resource.namespace_prefix, 'SNMP V3 Privacy Protocol'): expected_val,
+            '{}.{}'.format(self.resource.namespace_prefix, 'SNMP V3 Privacy Protocol'): expected_val,
         }
 
         self.assertEqual(expected_val, self.resource.snmp_v3_priv_protocol)

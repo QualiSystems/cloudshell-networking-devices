@@ -107,8 +107,9 @@ class TestGenericSDNResource(unittest.TestCase):
         self.assertEqual(result, expected_val)
 
     def test_no_shell_name(self):
-        shell_name = ''
-
-        resource = GenericSDNResource(shell_name=shell_name)
-
-        self.assertEqual('', resource.namespace_prefix)
+        self.assertRaisesRegexp(
+            DeprecationWarning,
+            '1gen Shells doesn\'t supported',
+            GenericSDNResource,
+            shell_name='',
+        )

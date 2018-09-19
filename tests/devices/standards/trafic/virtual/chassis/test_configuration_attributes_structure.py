@@ -15,22 +15,22 @@ class TestTrafficGeneratorVBladeResource(unittest.TestCase):
         shell_name = 'test shell name'
         context = mock.MagicMock()
 
-        result = TrafficGeneratorVChassisResource.from_context(context, shell_name=shell_name)
+        result = TrafficGeneratorVChassisResource.from_context(shell_name, context)
 
         self.assertIsInstance(result, TrafficGeneratorVChassisResource)
 
     def test_no_shell_name(self):
-        shell_name = ''
-
-        resource = TrafficGeneratorVChassisResource(shell_name=shell_name)
-
-        self.assertEqual('', resource.namespace_prefix)
-        self.assertEqual('', resource.shell_type)
+        self.assertRaisesRegexp(
+            DeprecationWarning,
+            '1gen Shells doesn\'t supported',
+            TrafficGeneratorVChassisResource,
+            shell_name='',
+        )
 
     def test_user(self):
         expected_val = 'test value'
         self.resource.attributes = {
-            '{}{}'.format(self.resource.namespace_prefix, 'User'): expected_val
+            '{}.{}'.format(self.resource.namespace_prefix, 'User'): expected_val
         }
 
         self.assertEqual(expected_val, self.resource.user)
@@ -38,7 +38,7 @@ class TestTrafficGeneratorVBladeResource(unittest.TestCase):
     def test_password(self):
         expected_val = 'test value'
         self.resource.attributes = {
-            '{}{}'.format(self.resource.namespace_prefix, 'Password'): expected_val
+            '{}.{}'.format(self.resource.namespace_prefix, 'Password'): expected_val
         }
 
         self.assertEqual(expected_val, self.resource.password)
@@ -46,7 +46,7 @@ class TestTrafficGeneratorVBladeResource(unittest.TestCase):
     def test_license_server(self):
         expected_val = 'test value'
         self.resource.attributes = {
-            '{}{}'.format(self.resource.shell_type, 'License Server'): expected_val
+            '{}.{}'.format(self.resource.shell_type, 'License Server'): expected_val
         }
 
         self.assertEqual(expected_val, self.resource.license_server)
@@ -54,7 +54,7 @@ class TestTrafficGeneratorVBladeResource(unittest.TestCase):
     def test_cli_connection_type(self):
         expected_val = 'test value'
         self.resource.attributes = {
-            '{}{}'.format(self.resource.namespace_prefix, 'CLI Connection Type'): expected_val
+            '{}.{}'.format(self.resource.namespace_prefix, 'CLI Connection Type'): expected_val
         }
 
         self.assertEqual(expected_val, self.resource.cli_connection_type)
@@ -62,7 +62,7 @@ class TestTrafficGeneratorVBladeResource(unittest.TestCase):
     def test_cli_tcp_port(self):
         expected_val = 'test value'
         self.resource.attributes = {
-            '{}{}'.format(self.resource.namespace_prefix, 'CLI TCP Port'): expected_val
+            '{}.{}'.format(self.resource.namespace_prefix, 'CLI TCP Port'): expected_val
         }
 
         self.assertEqual(expected_val, self.resource.cli_tcp_port)
@@ -70,7 +70,7 @@ class TestTrafficGeneratorVBladeResource(unittest.TestCase):
     def test_sessions_concurrency_limit(self):
         expected_val = 'test value'
         self.resource.attributes = {
-            '{}{}'.format(self.resource.namespace_prefix, 'Sessions Concurrency Limit'):
+            '{}.{}'.format(self.resource.namespace_prefix, 'Sessions Concurrency Limit'):
                 expected_val
         }
 

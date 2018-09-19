@@ -3,7 +3,6 @@ import unittest
 import mock
 
 from cloudshell.devices.standards.firewall.configuration_attributes_structure import GenericFirewallResource
-from cloudshell.devices.standards.firewall.configuration_attributes_structure import create_firewall_resource_from_context
 
 
 class TestModule(unittest.TestCase):
@@ -13,9 +12,11 @@ class TestModule(unittest.TestCase):
         supported_os = "test OS"
         context = mock.MagicMock()
         # act
-        result = create_firewall_resource_from_context(shell_name=shell_name,
-                                                       supported_os=supported_os,
-                                                       context=context)
+        result = GenericFirewallResource.from_context(
+            shell_name=shell_name,
+            context=context,
+            supported_os=supported_os
+        )
         # verify
         self.assertIsInstance(result, GenericFirewallResource)
 
@@ -294,8 +295,11 @@ class TestGenericFirewallResource(unittest.TestCase):
         self.assertEqual(result, expected_val)
 
     def test_no_shell_name(self):
-        shell_name = ''
-
-        resource = GenericFirewallResource(shell_name, self.name, self.supported_os)
-
-        self.assertEqual('', resource.namespace_prefix)
+        self.assertRaisesRegexp(
+            DeprecationWarning,
+            '1gen Shells doesn\'t supported',
+            GenericFirewallResource,
+            shell_name='',
+            name=self.name,
+            supported_os=self.supported_os,
+        )
