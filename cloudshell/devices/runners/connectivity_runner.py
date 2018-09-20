@@ -11,12 +11,35 @@ from threading import Thread, current_thread
 
 from cloudshell.core.driver_response import DriverResponse
 from cloudshell.core.driver_response_root import DriverResponseRoot
-from cloudshell.networking.apply_connectivity.models.connectivity_result import ConnectivityErrorResponse, \
-    ConnectivitySuccessResponse
 from cloudshell.devices.json_request_helper import JsonRequestDeserializer
 from cloudshell.devices.networking_utils import serialize_to_json, validate_vlan_range, \
     validate_vlan_number, command_logging
 from cloudshell.devices.runners.interfaces.connectivity_runner_interface import ConnectivityOperationsInterface
+
+
+class ConnectivityActionResult(object):
+
+    def __init__(self, action):
+        self.actionId = action.actionId
+        self.type = action.type
+        self.updatedInterface = action.actionTarget.fullName
+        self.infoMessage = None
+        self.errorMessage = None
+        self.success = True
+
+
+class ConnectivitySuccessResponse(ConnectivityActionResult):
+    def __init__(self, action, result_string):
+        super(ConnectivitySuccessResponse, self).__init__(action)
+        self.infoMessage = result_string
+        self.success = True
+
+
+class ConnectivityErrorResponse(ConnectivityActionResult):
+    def __init__(self, action, error_string):
+        super(ConnectivityErrorResponse, self).__init__(action)
+        self.errorMessage = error_string
+        self.success = False
 
 
 class ConnectivityRunner(ConnectivityOperationsInterface):
