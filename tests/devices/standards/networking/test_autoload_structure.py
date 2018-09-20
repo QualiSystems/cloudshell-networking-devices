@@ -22,20 +22,15 @@ class TestGenericResource(unittest.TestCase):
                                         shell_type=self.shell_type)
 
     def test_generic_resource_no_shell_name(self):
-        shell_name = ""
         name = "test name"
         unique_id = "test unique id"
         shell_type = ""
-
-        self.assertRaisesRegexp(
-            DeprecationWarning,
-            "1gen Shells doesn't supported",
-            GenericResource,
-            shell_name,
-            name,
-            unique_id,
-            shell_type,
-        )
+        resource = GenericResource(shell_name="",
+                                   name=name,
+                                   unique_id=unique_id,
+                                   shell_type=shell_type)
+        self.assertEqual(resource.shell_name, "")
+        self.assertEqual(resource.shell_type, "")
 
     def test_contact_name_getter(self):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
@@ -512,7 +507,7 @@ class TestGenericPort(unittest.TestCase):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
         attr_value = "test value"
         self.resource.attributes = {
-            "{}{}".format(self.resource.family_name, "Bandwidth"): attr_value
+            "{}{}".format(self.resource.namespace, "Bandwidth"): attr_value
         }
         # act
         result = self.resource.bandwidth
@@ -525,7 +520,7 @@ class TestGenericPort(unittest.TestCase):
         # act
         self.resource.bandwidth = attr_value
         # verify
-        attr_key = "{}{}".format(self.resource.family_name, "Bandwidth")
+        attr_key = "{}{}".format(self.resource.namespace, "Bandwidth")
         self.assertIn(attr_key, self.resource.attributes)
         self.assertEqual(attr_value, self.resource.attributes[attr_key])
 

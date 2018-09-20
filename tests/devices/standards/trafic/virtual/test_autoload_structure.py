@@ -23,14 +23,10 @@ class TestChassis(unittest.TestCase):
         )
 
     def test_no_shell_name(self):
-        self.assertRaisesRegexp(
-            DeprecationWarning,
-            r'1gen Shells doesn\'t supported',
-            Chassis,
-            '',
-            'name',
-            'uniq_id',
-        )
+        resource = Chassis('', 'name', 'uniq_id')
+
+        self.assertEqual(resource.shell_name, '')
+        self.assertEqual(resource.shell_type, '')
 
         
 class TestModule(unittest.TestCase):
@@ -128,12 +124,7 @@ class TestPort(unittest.TestCase):
 
     def test_no_shell_name(self):
         shell_name = ''
+        resource = Port(shell_name, self.name, self.unique_id)
 
-        self.assertRaisesRegexp(
-            DeprecationWarning,
-            r'1gen Shells doesn\'t supported',
-            Port,
-            shell_name,
-            self.name,
-            self.unique_id,
-        )
+        self.assertEqual(resource.shell_name, '')
+        self.assertEqual(resource.shell_type, '')

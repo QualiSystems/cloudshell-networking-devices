@@ -14,14 +14,14 @@ class AbstractResource(object):
         :param str name:
         :param str unique_id:
         """
-
-        if not shell_name:
-            raise DeprecationWarning("1gen Shells doesn't supported")
-
         self._name = name
         self.shell_name = shell_name
-        self.namespace = "{shell_name}.{resource_model}.".format(
-            shell_name=self.shell_name, resource_model=self.RESOURCE_MODEL)
+        if self.shell_name:
+            self.namespace = "{shell_name}.{resource_model}.".format(shell_name=self.shell_name,
+                                                                     resource_model=self.RESOURCE_MODEL
+                                                                     .replace(" ", ""))
+        else:
+            self.namespace = ""
 
         self.unique_id = unique_id
         self.attributes = {}
@@ -37,8 +37,8 @@ class AbstractResource(object):
     def cloudshell_model_name(self):
         """Return the name of the CloudShell model"""
         if self.shell_name:
-            return "{shell_name}.{resource_model}".format(
-                shell_name=self.shell_name, resource_model=self.RESOURCE_MODEL)
+            return "{shell_name}.{resource_model}".format(shell_name=self.shell_name,
+                                                          resource_model=self.RESOURCE_MODEL.replace(" ", ""))
         else:
             return self.RESOURCE_MODEL
 
