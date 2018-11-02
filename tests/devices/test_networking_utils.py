@@ -220,9 +220,16 @@ class TestUrlParser(unittest.TestCase):
         # verify
         self.assertEqual(result, self.url)
 
-    def test_scp_link_parsed_and_return_same_link(self):
+    def test_scp_link_parsed_and_return_same_link_with_colon(self):
         url = ("scp://cisco:securePassword!1@test.host.com:"
                "//d:/some_path/test_file_name.ext?arg=val")
+        url_data = networking_utils.UrlParser.parse_url(url)
+        new_url = networking_utils.UrlParser.build_url(url_data)
+        self.assertEqual(url, new_url)
+
+    def test_scp_link_parsed_and_return_same_link(self):
+        url = ("scp://cisco:securePassword!1@test.host.com"
+               "//some_path/test_file_name")
         url_data = networking_utils.UrlParser.parse_url(url)
         new_url = networking_utils.UrlParser.build_url(url_data)
         self.assertEqual(url, new_url)

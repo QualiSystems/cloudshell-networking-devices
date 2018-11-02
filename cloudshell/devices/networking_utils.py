@@ -348,9 +348,14 @@ class UrlParser(object):
                 if hasattr(parsed, attr_value):
                     value = getattr(parsed, attr_value)
                     if attr_value == UrlParser.PATH:
-                        path, filename = os.path.split(value)
+                        # path, filename = os.path.split(value)
+                        path = value
+                        if not path.endswith("/"):
+                            filename = path[path.rfind("/"):]
+                            # removing first slash from the filename
+                            result[UrlParser.FILENAME] = filename[1:]
+                            path = path.replace(filename, "")
                         result[UrlParser.PATH] = path
-                        result[UrlParser.FILENAME] = filename
                     else:
                         result[attr_value] = value
         return result
@@ -378,11 +383,11 @@ class UrlParser(object):
                     credentials = '{}:{}@'.format(url[UrlParser.USERNAME], url[UrlParser.PASSWORD])
                 url_result[UrlParser.NETLOC] = credentials + url_result[UrlParser.NETLOC]
 
-        url_result[UrlParser.PATH] = url[UrlParser.FILENAME]
-        if UrlParser.PATH in url and url[UrlParser.PATH]:
+        url_result[UrlParser.PATH] = url.get(UrlParser.FILENAME, "")
+        if url.get(UrlParser.PATH) and url.get(UrlParser.FILENAME):
             if not url.get(UrlParser.PATH, "").endswith("/"):
                 url[UrlParser.PATH] = "{}/".format(url.get(UrlParser.PATH, ""))
-            url_result[UrlParser.PATH] = url[UrlParser.PATH] + url_result[UrlParser.PATH]
+        url_result[UrlParser.PATH] = url[UrlParser.PATH] + url.get(UrlParser.FILENAME, "")
 
         if UrlParser.QUERY in url and url[UrlParser.QUERY]:
             url_result[UrlParser.QUERY] = url[UrlParser.QUERY]
