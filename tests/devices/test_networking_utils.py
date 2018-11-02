@@ -219,3 +219,10 @@ class TestUrlParser(unittest.TestCase):
         result = networking_utils.UrlParser.build_url(url=self.url_data)
         # verify
         self.assertEqual(result, self.url)
+
+    def test_scp_link_parsed_and_return_same_link(self):
+        url = ("scp://cisco:securePassword!1@test.host.com:"
+               "//d:/some_path/test_file_name.ext?arg=val")
+        url_data = networking_utils.UrlParser.parse_url(url)
+        new_url = networking_utils.UrlParser.build_url(url_data)
+        self.assertEqual(url, new_url)

@@ -380,8 +380,9 @@ class UrlParser(object):
 
         url_result[UrlParser.PATH] = url[UrlParser.FILENAME]
         if UrlParser.PATH in url and url[UrlParser.PATH]:
-            url_result[UrlParser.PATH] = url[UrlParser.PATH] + '/' + url_result[UrlParser.PATH]
-            url_result[UrlParser.PATH] = re.sub('//+', '/', url_result[UrlParser.PATH])
+            if not url.get(UrlParser.PATH, "").endswith("/"):
+                url[UrlParser.PATH] = "{}/".format(url.get(UrlParser.PATH, ""))
+            url_result[UrlParser.PATH] = url[UrlParser.PATH] + url_result[UrlParser.PATH]
 
         if UrlParser.QUERY in url and url[UrlParser.QUERY]:
             url_result[UrlParser.QUERY] = url[UrlParser.QUERY]
