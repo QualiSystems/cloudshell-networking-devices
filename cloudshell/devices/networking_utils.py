@@ -66,9 +66,12 @@ class UrlParser(object):
                 if hasattr(parsed, attr_value):
                     value = getattr(parsed, attr_value)
                     if attr_value == UrlParser.PATH:
-                        path, filename = os.path.split(value)
-                        result[UrlParser.PATH] = path
-                        result[UrlParser.FILENAME] = filename
+                        path = value
+                        if not path.endswith("/"):
+                            filename = path[path.rfind("/") + 1:]
+                            result[UrlParser.FILENAME] = filename
+                            path = path.replace(filename, "")
+                        result[UrlParser.PATH] = path[:-1]
                     else:
                         result[attr_value] = value
         return result
