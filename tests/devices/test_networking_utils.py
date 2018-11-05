@@ -112,3 +112,10 @@ class TestUrlParser(unittest.TestCase):
         url_data = networking_utils.UrlParser.parse_url(url)
         new_url = networking_utils.UrlParser.build_url(url_data)
         self.assertEqual(url, new_url)
+
+    def test_link_without_filename(self):
+        url = ("scp://cisco:securePassword!1@test.host.com:"
+               "//d:/some_path/")
+        url_data = networking_utils.UrlParser.parse_url(url)
+        new_url = networking_utils.UrlParser.build_url(url_data)
+        self.assertEqual(url, new_url)

@@ -67,6 +67,7 @@ class UrlParser(object):
                     value = getattr(parsed, attr_value)
                     if attr_value == UrlParser.PATH:
                         path = value
+                        result[UrlParser.FILENAME] = None
                         if not path.endswith("/"):
                             filename = path[path.rfind("/") + 1:]
                             result[UrlParser.FILENAME] = filename
@@ -99,11 +100,12 @@ class UrlParser(object):
                     credentials = '{}:{}@'.format(url[UrlParser.USERNAME], url[UrlParser.PASSWORD])
                 url_result[UrlParser.NETLOC] = credentials + url_result[UrlParser.NETLOC]
 
-        url_result[UrlParser.PATH] = url[UrlParser.FILENAME]
-        if UrlParser.PATH in url and url[UrlParser.PATH]:
-            if not url.get(UrlParser.PATH, "").endswith("/"):
-                url[UrlParser.PATH] = "{}/".format(url.get(UrlParser.PATH, ""))
-            url_result[UrlParser.PATH] = url[UrlParser.PATH] + url_result[UrlParser.PATH]
+        url_result[UrlParser.PATH] = url.get(UrlParser.FILENAME) or ""
+        path = url.get(UrlParser.PATH, "")
+        if path:
+            if not path.endswith("/"):
+                path = "{}/".format(path)
+            url_result[UrlParser.PATH] = path + url_result[UrlParser.PATH]
 
         if UrlParser.QUERY in url and url[UrlParser.QUERY]:
             url_result[UrlParser.QUERY] = url[UrlParser.QUERY]
