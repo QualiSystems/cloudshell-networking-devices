@@ -3,8 +3,7 @@
 from functools import wraps
 
 import jsonpickle
-import os
-import re
+
 
 from urlparse import urlsplit, SplitResult
 
