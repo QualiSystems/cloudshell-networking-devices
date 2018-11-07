@@ -116,6 +116,7 @@ class TestUrlParser(unittest.TestCase):
 
     def test_build_url_without_netloc(self):
         url_data = networking_utils.UrlParser.parse_url('http://test.com')
+        url_data["netloc"] = ""
         backup_user = 'user'  # we can add it in ConfigurationRunner
         backup_password = 'password'
         port = '22'
