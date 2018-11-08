@@ -103,12 +103,13 @@ class UrlParser(object):
                 credentials = '{}:{}@'.format(username, password)
             netloc = credentials + netloc
 
+        target_path = filename
         if path:
             if not path.endswith("/"):
                 path = "{}/".format(path)
-            path = path + filename
+            target_path = path + target_path
 
-        return urlunsplit((scheme, netloc, path, query, fragment))
+        return urlunsplit((scheme, netloc, target_path, query, fragment))
 
 
 def command_logging(func):
