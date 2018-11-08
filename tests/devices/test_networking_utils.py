@@ -143,3 +143,9 @@ class TestUrlParser(unittest.TestCase):
         url_data = networking_utils.UrlParser.parse_url(url)
         new_url = networking_utils.UrlParser.build_url(url_data)
         self.assertEqual(url, new_url)
+
+    def test_simple_ftp_path(self):
+        url = 'ftp://192.168.122.10/Test-running-100418-163658'
+        url_data = networking_utils.UrlParser.parse_url(url)
+        new_url = networking_utils.UrlParser.build_url(url_data)
+        self.assertEqual(url, new_url)
