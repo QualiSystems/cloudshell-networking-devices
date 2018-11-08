@@ -81,7 +81,7 @@ class UrlParser(object):
         query = url.get(UrlParser.QUERY, "")
         fragment = url.get(UrlParser.FRAGMENT, "")
         netloc = url.get(UrlParser.NETLOC)
-        host = url.get(UrlParser.HOSTNAME)
+        host = url.get(UrlParser.HOSTNAME, "")
         port = url.get(UrlParser.PORT)
         username = url.get(UrlParser.USERNAME)
         password = url.get(UrlParser.PASSWORD)
@@ -92,8 +92,6 @@ class UrlParser(object):
             raise Exception('Url missing key value: scheme.')
 
         if not netloc:
-            if not host:
-                raise Exception('Url missing key value: hostname.')
             netloc = host
         if port and str(port) not in netloc:
             netloc += ':{}'.format(port)

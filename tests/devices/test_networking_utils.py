@@ -83,19 +83,6 @@ class TestUrlParser(unittest.TestCase):
             url_data,
         )
 
-    def test_build_url_without_host(self):
-        url_data = self.url_data.copy()
-        url_data['scheme'] = 'scp'
-        url_data['netloc'] = ''
-        url_data['hostname'] = ''
-
-        self.assertRaisesRegexp(
-            Exception,
-            'Url missing key value: hostname.',
-            networking_utils.UrlParser.build_url,
-            url_data,
-        )
-
     def test_build_url_fail_when_url_empty(self):
         url_data = {}
 
