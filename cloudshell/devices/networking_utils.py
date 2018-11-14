@@ -3,12 +3,11 @@
 
 import jsonpickle
 import math
-import os
 import re
 import socket
 import struct
 
-from urlparse import urlsplit, SplitResult
+from urlparse import urlsplit, urlunsplit
 
 
 def normalize_path(path):
@@ -349,6 +348,7 @@ class UrlParser(object):
                     value = getattr(parsed, attr_value)
                     if attr_value == UrlParser.PATH:
                         path = value
+                        result[UrlParser.FILENAME] = ""
                         if not path.endswith("/"):
                             filename = path[path.rfind("/") + 1:]
                             result[UrlParser.FILENAME] = filename
@@ -360,35 +360,36 @@ class UrlParser(object):
 
     @staticmethod
     def build_url(url):
-        url_result = {UrlParser.QUERY: '', UrlParser.FRAGMENT: ''}
-        if not url or UrlParser.SCHEME not in url or not url[UrlParser.SCHEME]:
-            raise Exception('UrlParser:build_url', 'Url dictionary is empty or missing key values')
+        if not url:
+            raise Exception('Url dictionary is empty.')
+        scheme = url.get(UrlParser.SCHEME, "")
+        query = url.get(UrlParser.QUERY, "")
+        fragment = url.get(UrlParser.FRAGMENT, "")
+        netloc = url.get(UrlParser.NETLOC)
+        host = url.get(UrlParser.HOSTNAME, "")
+        port = url.get(UrlParser.PORT)
+        username = url.get(UrlParser.USERNAME)
+        password = url.get(UrlParser.PASSWORD)
+        path = url.get(UrlParser.PATH, "")
+        filename = url.get(UrlParser.FILENAME, "")
 
-        url_result[UrlParser.SCHEME] = url[UrlParser.SCHEME]
+        if not scheme:
+            raise Exception('Url missing key value: scheme.')
 
-        if UrlParser.NETLOC in url and url[UrlParser.NETLOC]:
-            if UrlParser.USERNAME in url \
-                    and url[UrlParser.USERNAME] \
-                    and url[UrlParser.USERNAME] in url[UrlParser.NETLOC]:
-                url_result[UrlParser.NETLOC] = url[UrlParser.NETLOC]
-        if UrlParser.NETLOC not in url_result:
-            url_result[UrlParser.NETLOC] = url[UrlParser.HOSTNAME]
-            if UrlParser.PORT in url and url[UrlParser.PORT]:
-                url_result[UrlParser.NETLOC] += str(url[UrlParser.PORT])
-            if UrlParser.USERNAME in url and url[UrlParser.USERNAME]:
-                credentials = '{}@'.format(url[UrlParser.USERNAME])
-                if UrlParser.PASSWORD in url and url[UrlParser.PASSWORD]:
-                    credentials = '{}:{}@'.format(url[UrlParser.USERNAME], url[UrlParser.PASSWORD])
-                url_result[UrlParser.NETLOC] = credentials + url_result[UrlParser.NETLOC]
+        if not netloc:
+            netloc = host
+        if port and str(port) not in netloc:
+            netloc += ':{}'.format(port)
+        if username and username not in netloc or password and password not in netloc:
+            credentials = '{}@'.format(username)
+            if password:
+                credentials = '{}:{}@'.format(username, password)
+            netloc = credentials + netloc
 
-        url_result[UrlParser.PATH] = url.get(UrlParser.FILENAME, "")
-        if url.get(UrlParser.PATH) and url.get(UrlParser.FILENAME):
-            if not url.get(UrlParser.PATH, "").endswith("/"):
-                url[UrlParser.PATH] = "{}/".format(url.get(UrlParser.PATH, ""))
-        url_result[UrlParser.PATH] = url[UrlParser.PATH] + url.get(UrlParser.FILENAME, "")
+        target_path = filename
+        if path:
+            if not path.endswith("/"):
+                path = "{}/".format(path)
+            target_path = path + target_path
 
-        if UrlParser.QUERY in url and url[UrlParser.QUERY]:
-            url_result[UrlParser.QUERY] = url[UrlParser.QUERY]
-
-        result = SplitResult(**url_result)
-        return result.geturl()
+        return urlunsplit((scheme, netloc, target_path, query, fragment))
