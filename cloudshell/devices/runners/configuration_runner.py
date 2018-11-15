@@ -80,6 +80,8 @@ class ConfigurationRunner(ConfigurationOperationsInterface):
             vrf_management_name = vrf_management_name or self.resource_config.vrf_management_name
 
         self._validate_configuration_type(configuration_type)
+        if not folder_path.endswith("/"):
+            folder_path += "/"
         folder_path = self.get_path(folder_path)
         system_name = re.sub('\s+', '_', self.resource_config.name)[:23]
         time_stamp = time.strftime("%d%m%y-%H%M%S", time.localtime())
