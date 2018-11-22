@@ -38,11 +38,11 @@ class CustomCommandExecutor(object):
     ERROR_MARKER = 'error_map'
     ACTION_MARKER = 'action_map'
     COMMAND_SEPARATOR = ';'
-    PATTERN_SEPARATOR = ':'
+    # PATTERN_SEPARATOR = '='
 
     COMMAND_PATTERN = r'^\s*(.*?)\s*({})'.format('|'.join([ERROR_MARKER, ACTION_MARKER]))
 
-    ACTION_ERROR_PATTERN = r'(%s)\s*=\s*\{(.+?)\}' % ('|'.join([ERROR_MARKER, ACTION_MARKER]))
+    ACTION_ERROR_PATTERN = r'(%s)\s*=\s*(\{.+?\})' % ('|'.join([ACTION_MARKER, ERROR_MARKER]))
 
     def __init__(self, command):
         """
@@ -73,15 +73,30 @@ class CustomCommandExecutor(object):
         else:
             command_string = command_block
         command = ComplexCommand(command_string)
-        for key, value in re.findall(self.ACTION_ERROR_PATTERN, command_block, re.IGNORECASE):
-            pattern, action_error = re.split(self.PATTERN_SEPARATOR, value)
-            if key.lower() == self.ERROR_MARKER:
-                command.add_error(pattern, action_error)
-            elif key.lower() == self.ACTION_MARKER:
-                command.add_action(pattern, action_error)
-            else:
-                raise Exception(self.__class__.__name__, 'Cannot determine key {}'.format(key))
+        action_blocks = re.findall(self.ACTION_ERROR_PATTERN, command_block, re.IGNORECASE | re.DOTALL)
+        for key, value in action_blocks:
+            action_dict = self._deserialize_action(value)
+            for pattern, action_error in action_dict.iteritems():
+                if key.lower() == self.ERROR_MARKER:
+                    command.add_error(pattern, action_error)
+                elif key.lower() == self.ACTION_MARKER:
+                    command.add_action(pattern, action_error)
+                else:
+                    raise Exception(self.__class__.__name__, 'Cannot determine key {}'.format(key))
         return command
+
+    def _deserialize_action(self, block):
+        """
+        :param block: Block of Actions or errors {'pattern':'action', 'error_pattern':'error'}
+        :type block: str
+        :rtype: dict
+        """
+        result_dict = OrderedDict()
+        c_block = re.sub('\{\s*[\'\"]{1}|[\'\"]{1}\}', '', block)
+        for sub_block in re.split(r'[\"\']{1}\s*\,\s*[\"\']{1}', c_block):
+            key, value = re.split(r'[\'\"]{1}\s*\:\s*[\'\"]{1}', sub_block)
+            result_dict[key] = value
+        return result_dict
 
     def execute_commands(self, cli_service, logger):
         """
