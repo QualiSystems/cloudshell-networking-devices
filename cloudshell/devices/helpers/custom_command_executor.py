@@ -1,4 +1,3 @@
-import os
 import re
 from collections import OrderedDict
 
@@ -21,7 +20,7 @@ class ComplexCommand(object):
         :type pattern: basestring
         :type action: basestring
         """
-        self.action_map[pattern.strip()] = lambda session, logger: session.send_line(action, logger)
+        self.action_map[pattern.strip()] = lambda session, logger: session.send_line(action.strip(), logger)
 
     def execute(self, cli_service, logger):
         """
@@ -31,7 +30,7 @@ class ComplexCommand(object):
         """
         output = cli_service.send_command(self.command, action_map=self.action_map, error_map=self.error_map,
                                           logger=logger)
-        return output + os.linesep
+        return output
 
 
 class CustomCommandExecutor(object):
