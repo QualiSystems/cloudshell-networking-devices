@@ -91,7 +91,7 @@ class CustomCommandExecutor(object):
         :rtype: dict
         """
         result_dict = OrderedDict()
-        c_block = re.sub('\{\s*[\'\"]{1}|[\'\"]{1}\}', '', block)
+        c_block = re.sub(r'\{\s*[\'\"]{1}|[\'\"]{1}\}', '', block)
         for sub_block in re.split(r'[\"\']{1}\s*\,\s*[\"\']{1}', c_block):
             key, value = re.split(r'[\'\"]{1}\s*\:\s*[\'\"]{1}', sub_block)
             result_dict[key] = value

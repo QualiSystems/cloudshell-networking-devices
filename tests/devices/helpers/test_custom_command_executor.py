@@ -183,3 +183,30 @@ class TestCustomCommandExecutor(unittest.TestCase):
             instance._process_command_block(command_block)
         _re.findall.assert_called_once_with(instance.ACTION_ERROR_PATTERN, command_block, _re.IGNORECASE | _re.DATALL)
         _deserialize_action.assert_called_once_with(value)
+
+    @patch("cloudshell.devices.helpers.custom_command_executor.CustomCommandExecutor._process_command")
+    @patch("cloudshell.devices.helpers.custom_command_executor.re")
+    def test_deserialize_action(self, _re, _process_command):
+        block = Mock()
+        c_block = Mock()
+        sub_block = Mock()
+        key = Mock()
+        value = Mock()
+        _re.sub.return_value = c_block
+        _re.split.side_effect = [[sub_block], (key, value)]
+        instance = self._initialize_instance()
+        self.assertEqual(instance._deserialize_action(block), OrderedDict([(key, value)]))
+        _re.sub.assert_called_once_with(r'\{\s*[\'\"]{1}|[\'\"]{1}\}', '', block)
+        _re.split.assert_has_calls(
+            [call(r'[\"\']{1}\s*\,\s*[\"\']{1}', c_block), call(r'[\'\"]{1}\s*\:\s*[\'\"]{1}', sub_block)])
+
+    @patch("cloudshell.devices.helpers.custom_command_executor.CustomCommandExecutor._process_command")
+    def test_execute_command(self, _process_command):
+        command_otput = 'test_output'
+        command = Mock(execute=Mock(return_value=command_otput))
+        cli_service = Mock()
+        logger = Mock()
+        instance = self._initialize_instance()
+        instance.commands = [command]
+        self.assertEqual(instance.execute_commands(cli_service, logger), command_otput)
+        command.execute.assert_called_once_with(cli_service, logger)
