@@ -47,13 +47,11 @@ class AbstractResource(object):
         return self.namespace
 
 
-class ResourceAttrLvl(object):
-    NAMESPACE = 'namespace'
-    CS_FAMILY_TYPE = 'CS_FAMILY_TYPE'
-
-
 class ResourceAttr(object):
-    LVL = ResourceAttrLvl
+
+    class LVL(object):
+        NAMESPACE = 'namespace'
+        CS_FAMILY_TYPE = 'CS_FAMILY_TYPE'
 
     def __init__(self, prefix_attr, name, default=None):
         self.prefix_attr = prefix_attr
