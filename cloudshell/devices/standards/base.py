@@ -114,7 +114,7 @@ class BaseGenericPort(AbstractResource):
 
 class BaseGenericNetworkPort(BaseGenericPort):
     auto_negotiation = ResourceAttr(ResourceAttr.LVL.NAMESPACE, 'Auto Negotiation')
-    bandwidth = ResourceAttr(ResourceAttr.LVL.CS_FAMILY_TYPE, 'Bandwidth', 0)
+    bandwidth = ResourceAttr(ResourceAttr.LVL.NAMESPACE, 'Bandwidth', 0)
     duplex = ResourceAttr(ResourceAttr.LVL.NAMESPACE, 'Duplex', 'Half')
     l2_protocol_type = ResourceAttr(ResourceAttr.LVL.NAMESPACE, 'L2 Protocol Type')
     mtu = ResourceAttr(ResourceAttr.LVL.NAMESPACE, 'MTU', 0)
