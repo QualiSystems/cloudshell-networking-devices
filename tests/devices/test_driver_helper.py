@@ -63,7 +63,9 @@ class TestDriverHelper(unittest.TestCase):
         config = mock.MagicMock(snmp_version="v3")
         api = mock.MagicMock()
         snmp_v3 = mock.MagicMock()
-        snmpv3parameters_class.return_value = snmp_v3
+        snmp_v3_inst = mock.Mock()
+        snmp_v3_inst.get_valid.return_value = snmp_v3
+        snmpv3parameters_class.return_value = snmp_v3_inst
         decrypted_snmp_string = mock.MagicMock()
         api.DecryptPassword.return_value = decrypted_snmp_string
         # act
