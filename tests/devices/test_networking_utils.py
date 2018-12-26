@@ -78,7 +78,17 @@ class TestUrlParser(unittest.TestCase):
 
         self.assertRaisesRegexp(
             Exception,
-            'Url dictionary is empty or missing key values',
+            'Url missing key value: scheme.',
+            networking_utils.UrlParser.build_url,
+            url_data,
+        )
+
+    def test_build_url_fail_when_url_empty(self):
+        url_data = {}
+
+        self.assertRaisesRegexp(
+            Exception,
+            'Url dictionary is empty.',
             networking_utils.UrlParser.build_url,
             url_data,
         )
@@ -93,6 +103,7 @@ class TestUrlParser(unittest.TestCase):
 
     def test_build_url_without_netloc(self):
         url_data = networking_utils.UrlParser.parse_url('http://test.com')
+        url_data["netloc"] = ""
         backup_user = 'user'  # we can add it in ConfigurationRunner
         backup_password = 'password'
         port = '22'
@@ -105,3 +116,23 @@ class TestUrlParser(unittest.TestCase):
         url = networking_utils.UrlParser.build_url(url_data)
 
         self.assertEqual(url, 'http://user:password@test.com:22')
+
+    def test_scp_link_parsed_and_return_same_link(self):
+        url = ("scp://cisco:securePassword!1@test.host.com:"
+               "//d:/some_path/test_file_name.ext?arg=val")
+        url_data = networking_utils.UrlParser.parse_url(url)
+        new_url = networking_utils.UrlParser.build_url(url_data)
+        self.assertEqual(url, new_url)
+
+    def test_link_without_filename(self):
+        url = ("scp://cisco:securePassword!1@test.host.com"
+               "//some_path/")
+        url_data = networking_utils.UrlParser.parse_url(url)
+        new_url = networking_utils.UrlParser.build_url(url_data)
+        self.assertEqual(url, new_url)
+
+    def test_simple_ftp_path(self):
+        url = 'ftp://192.168.122.10/Test-running-100418-163658'
+        url_data = networking_utils.UrlParser.parse_url(url)
+        new_url = networking_utils.UrlParser.build_url(url_data)
+        self.assertEqual(url, new_url)

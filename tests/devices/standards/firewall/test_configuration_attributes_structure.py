@@ -183,6 +183,28 @@ class TestGenericFirewallResource(unittest.TestCase):
         # verify
         self.assertEqual(result, expected_val)
 
+    def test_snmp_v3_auth_protocol(self):
+        """Check that property will return needed attribute value from the internal attributes dictionary"""
+        expected_val = "test value"
+        self.resource.attributes = {
+            "{}.{}".format(self.shell_name, "SNMP V3 Authentication Protocol"): expected_val
+        }
+        # act
+        result = self.resource.snmp_v3_auth_protocol
+        # verify
+        self.assertEqual(result, expected_val)
+
+    def test_snmp_v3_priv_protocol(self):
+        """Check that property will return needed attribute value from the internal attributes dictionary"""
+        expected_val = "test value"
+        self.resource.attributes = {
+            "{}.{}".format(self.shell_name, "SNMP V3 Privacy Protocol"): expected_val
+        }
+        # act
+        result = self.resource.snmp_v3_priv_protocol
+        # verify
+        self.assertEqual(result, expected_val)
+
     def test_snmp_version(self):
         """Check that property will return needed attribute value from the internal attributes dictionary"""
         expected_val = "test value"
