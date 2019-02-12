@@ -85,8 +85,8 @@ class GenericTrafficControllerResource(object):
         """
         return self.attributes.get("{}Service Categories".format(self.namespace_prefix), None)
 
-    @staticmethod
-    def from_context(shell_name, supported_os, context):
+    @classmethod
+    def from_context(cls, shell_name, supported_os, context):
         """
         Creates an instance of Networking Resource by given context
         :param shell_name: Shell Name
@@ -99,8 +99,8 @@ class GenericTrafficControllerResource(object):
         :rtype GenericNetworkingResource
         """
 
-        result = GenericTrafficControllerResource(shell_name=shell_name, name=context.resource.name,
-                                                  supported_os=supported_os)
+        result = cls(shell_name=shell_name, name=context.resource.name,
+                     supported_os=supported_os)
         result.address = context.resource.address
         result.family = context.resource.family
         result.fullname = context.resource.fullname

@@ -6,7 +6,7 @@ from cloudshell.devices.standards.validators import attr_length_validator
 AVAILABLE_SHELL_TYPES = ['CS_TrafficGeneratorChassis']
 
 __all__ = ["TrafficGeneratorChassis", "GenericTrafficGeneratorModule",
-           "GenericTrafficGeneratorPort", "GenericPowerPort"]
+           "GenericTrafficGeneratorPort", "GenericPowerPort", "AVAILABLE_SHELL_TYPES"]
 
 
 class TrafficGeneratorChassis(AbstractResource):
