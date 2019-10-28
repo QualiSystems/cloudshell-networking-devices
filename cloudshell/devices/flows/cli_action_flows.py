@@ -3,6 +3,7 @@
 
 from abc import abstractmethod
 from cloudshell.devices.cli_handler_impl import CliHandlerImpl
+from cloudshell.devices.helpers.custom_command_executor import CustomCommandExecutor
 
 
 class BaseCliFlow(object):
@@ -141,7 +142,8 @@ class RunCommandFlow(BaseCliFlow):
 
         with self._cli_handler.get_cli_service(mode) as session:
             for cmd in commands:
-                responses.append(session.send_command(command=cmd))
+                command_executor = CustomCommandExecutor(cmd)
+                responses.append(command_executor.execute_commands(session, self._logger))
         return '\n'.join(responses)
 
 
